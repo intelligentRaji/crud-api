@@ -1,0 +1,28 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": "crud api",
+  "main": "index.ts",
+  "scripts": {
+    "build": "webpack --config prod.config.ts",
+    "start": "npx tsx watch ./file.ts"
+  },
+  "keywords": [],
+  "author": "intelligentRaji",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@types/node": "^20.11.16",
+    "@types/webpack": "^5.28.5",
+    "esbuild-loader": "^4.0.3",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4"
+  }
+}
