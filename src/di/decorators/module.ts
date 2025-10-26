@@ -4,10 +4,10 @@ import { type Constructor } from '../types/constructor';
 import { type ClassProvider, type Provider } from '../types/provider';
 
 export interface ModuleMetadata {
-  controllers: Constructor<any>[];
-  providers: Provider<any>[] | Constructor<any>[];
-  imports: Constructor<any>[];
-  exports: Provider<any>[] | Constructor<any>[];
+  controllers?: Constructor<any>[];
+  providers?: Provider<any>[] | Constructor<any>[];
+  imports?: Constructor<any>[];
+  exports?: Provider<any>[] | Constructor<any>[];
 }
 
 export function Module({
