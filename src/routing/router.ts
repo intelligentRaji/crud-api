@@ -5,7 +5,7 @@ import { Injector } from '../di/injector/injector';
 import type { HandlerMetadata } from './decorators/method-decorators/handler';
 import { HOST, PARAMS, PORT, REQ, RES } from './tokens';
 import type { Constructor } from '../core/types/constructor';
-import { Serializer } from './content-type.service';
+import { Serializer } from '../serializing/serializer.service';
 
 export class Router {
   private readonly serializer = inject(Serializer);
