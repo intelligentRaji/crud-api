@@ -1,6 +1,6 @@
 import { getCurrentInjector, setCurrentInjector } from '../context';
 import { Injector } from '../injector/injector';
-import { type Constructor } from '../types/constructor';
+import { type Constructor } from '../../core/types/constructor';
 import { type ClassProvider, type Provider } from '../types/provider';
 
 export interface ModuleMetadata {
@@ -51,7 +51,7 @@ function importModules(injector: Injector, imports: Constructor<any>[]): void {
     const isModule = Reflect.getMetadata('module', module);
 
     if (!isModule) {
-      throw new Error(`Module ${module.name} is not a module`);
+      throw new Error(`${module.name} is not a module`);
     }
 
     const exports = Reflect.getMetadata('exports', module) as Provider<any>[];

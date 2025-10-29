@@ -1,5 +1,5 @@
 import { InjectionToken } from '../injection-token';
-import { type Constructor } from './constructor';
+import { type Constructor } from '../../core/types/constructor';
 
 export type Provider<T = any> =
   | ValueProvider<T>

@@ -1,4 +1,4 @@
-import { type Constructor } from './types/constructor';
+import { type Constructor } from '../core/types/constructor';
 import { getCurrentInjector } from './context';
 import { InjectionToken } from './injection-token';
 import { type InjectionOptionalOptions, type InjectionOptions } from './injector/injector';

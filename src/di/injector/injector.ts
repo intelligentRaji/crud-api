@@ -1,5 +1,5 @@
 import { InjectionToken } from '../injection-token';
-import { type Constructor } from '../types/constructor';
+import { type Constructor } from '../../core/types/constructor';
 import {
   type ClassProvider,
   type FactoryProvider,
@@ -20,14 +20,12 @@ type ProviderData = UninitializedProvider | InitializedProvider;
 interface InjectionSkipSelfOptions {
   self?: false;
   skipSelf?: true;
-  host?: boolean;
   optional?: boolean;
 }
 
 interface InjectionSelfOptions {
   self?: true;
   skipSelf?: false;
-  host?: boolean;
   optional?: boolean;
 }
 
@@ -62,7 +60,7 @@ export class Injector {
 
     if (!provider) {
       if (this.parent && !options.self) {
-        return this.parent.get(token, { optional: options.optional, self: options.host });
+        return this.parent.get(token, { optional: options.optional });
       }
 
       if (options.optional) {

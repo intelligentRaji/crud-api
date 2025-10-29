@@ -1,4 +1,5 @@
 import 'reflect-metadata';
 import { AppModule } from './app/app.module';
+import { Application } from './core/application';
 
-new AppModule();
+Application.init(AppModule);

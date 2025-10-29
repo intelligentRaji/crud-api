@@ -1,10 +1,16 @@
-import { inject } from '../../di/inject';
-import { TestService } from '../services/test.service';
+import { Controller } from '../../routing/decorators/controller';
+import { Get } from '../../routing/decorators/get';
+import { req } from '../../routing/tokens';
 
+@Controller('test')
 export class AppController {
-  private readonly testService = inject(TestService);
+  @Get('natasha')
+  public returnData() {
+    return this.test();
+  }
 
-  constructor() {
-    console.log(this.testService.test);
+  @Get('data')
+  public test() {
+    return req().url;
   }
 }
