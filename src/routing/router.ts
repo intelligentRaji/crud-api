@@ -2,16 +2,15 @@ import { getCurrentInjector, setCurrentInjector } from '../di/context';
 import { inject } from '../di/inject';
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { Injector } from '../di/injector/injector';
-import type { HandlerMetadata } from './decorators/handler';
+import type { HandlerMetadata } from './decorators/method-decorators/handler';
 import { HOST, PARAMS, PORT, REQ, RES } from './tokens';
 import type { Constructor } from '../core/types/constructor';
-
-const DEFAULT_HOST = 'localhost';
-const DEFAULT_PORT = 3000;
+import { Serializer } from './content-type.service';
 
 export class Router {
-  private readonly host = inject(HOST, { optional: true }) || DEFAULT_HOST;
-  private readonly port = inject(PORT, { optional: true }) || DEFAULT_PORT;
+  private readonly serializer = inject(Serializer);
+  private readonly host = inject(HOST);
+  private readonly port = inject(PORT);
 
   private readonly server = createServer();
 
@@ -25,44 +24,53 @@ export class Router {
 
     this.server.on('request', async (req, res) => {
       for (const handler of handlers) {
-        await handleRequest(req, res, basePath, handler, controller);
+        await this.handleRequest(req, res, basePath, handler, controller);
       }
     });
   }
-}
 
-async function handleRequest(
-  req: IncomingMessage,
-  res: ServerResponse,
-  basePath: string,
-  metadata: HandlerMetadata,
-  controller: any,
-) {
-  if (!isRequestMatchesHandler(req, metadata, basePath)) {
-    return;
+  private async handleRequest(
+    req: IncomingMessage,
+    res: ServerResponse,
+    basePath: string,
+    metadata: HandlerMetadata,
+    controller: any,
+  ) {
+    if (!isRequestMatchesHandler(req, metadata, basePath)) {
+      return;
+    }
+
+    const parent = getCurrentInjector();
+    const injector = new Injector(parent, [
+      {
+        provide: REQ,
+        useValue: req,
+      },
+      {
+        provide: RES,
+        useValue: res,
+      },
+      {
+        provide: PARAMS,
+        useValue: mapRouteParams(basePath, req?.url || ''),
+      },
+    ]);
+
+    const handler = controller[metadata.propertyKey].bind(controller);
+
+    setCurrentInjector(injector);
+    if (req.method === 'GET') {
+      this.handleGetRequest(res, await handler());
+    }
+    setCurrentInjector(parent);
   }
 
-  const parent = getCurrentInjector();
-  const injector = new Injector(parent, [
-    {
-      provide: REQ,
-      useValue: req,
-    },
-    {
-      provide: RES,
-      useValue: res,
-    },
-    {
-      provide: PARAMS,
-      useValue: mapRouteParams(basePath, req?.url || ''),
-    },
-  ]);
+  private handleGetRequest(res: ServerResponse, result: unknown): void {
+    const serialized = this.serializer.serialize(result);
 
-  const handler = controller[metadata.propertyKey].bind(controller);
-
-  setCurrentInjector(injector);
-  await handler();
-  setCurrentInjector(parent);
+    res.write(serialized);
+    res.end();
+  }
 }
 
 function mapRouteParams(pattern: string, actualPath: string): Record<string, string> {

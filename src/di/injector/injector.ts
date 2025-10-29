@@ -79,8 +79,10 @@ export class Injector {
     return dependency;
   }
 
-  public provide<T>(provider: Provider<T>): void {
-    this.providers.set(provider.provide.name, { provider });
+  public provide(...providers: Provider<any>[]): void {
+    providers.forEach((provider) => {
+      this.providers.set(provider.provide.name, { provider });
+    });
   }
 
   private initializeProvider(providerData: UninitializedProvider): any {
