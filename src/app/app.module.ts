@@ -1,9 +1,9 @@
 import { Module } from '../di/decorators/module';
 import { AppController } from './controllers/app.controller';
-import { TestService } from './services/test.service';
+import { TestModule } from './test.module';
 
 @Module({
-  providers: [TestService],
+  imports: [TestModule],
   controllers: [AppController],
 })
 export class AppModule {}

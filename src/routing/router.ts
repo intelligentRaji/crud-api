@@ -2,10 +2,10 @@ import { getCurrentInjector, setCurrentInjector } from '../di/context';
 import { inject } from '../di/inject';
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { Injector } from '../di/injector/injector';
-import type { HandlerMetadata } from './decorators/method-decorators/handler';
 import { HOST, PARAMS, PORT, REQ, RES } from './tokens';
 import type { Constructor } from '../core/types/constructor';
 import { Serializer } from '../serializing/serializer.service';
+import type { HandlerMeta } from './classes/handler-metadata';
 
 export class Router {
   private readonly serializer = inject(Serializer);
@@ -20,11 +20,14 @@ export class Router {
 
   public registerController(controller: any, constructor: Constructor): void {
     const basePath = Reflect.getMetadata('basePath', constructor) as string;
-    const handlers = Reflect.getMetadata('handlers', controller) as HandlerMetadata[];
+    const handlers = Reflect.getMetadata('handlers', controller) as HandlerMeta[];
 
     this.server.on('request', async (req, res) => {
-      for (const handler of handlers) {
-        await this.handleRequest(req, res, basePath, handler, controller);
+      for (const handler of Object.values(handlers)) {
+        if (isRequestMatchesHandler(req, handler, basePath)) {
+          await this.handleRequest(req, res, basePath, handler, controller);
+          break;
+        }
       }
     });
   }
@@ -33,13 +36,9 @@ export class Router {
     req: IncomingMessage,
     res: ServerResponse,
     basePath: string,
-    metadata: HandlerMetadata,
+    metadata: HandlerMeta,
     controller: any,
   ) {
-    if (!isRequestMatchesHandler(req, metadata, basePath)) {
-      return;
-    }
-
     const parent = getCurrentInjector();
     const injector = new Injector(parent, [
       {
@@ -52,11 +51,17 @@ export class Router {
       },
       {
         provide: PARAMS,
-        useValue: mapRouteParams(basePath, req?.url || ''),
+        useValue: mapRouteParams(`${basePath}${metadata.path ?? ''}`, req?.url || ''),
       },
     ]);
 
-    const handler = controller[metadata.propertyKey].bind(controller);
+    const propertyKey = metadata.propertyKey;
+
+    if (!propertyKey) {
+      throw new Error('Use method decorators to define handler');
+    }
+
+    const handler = controller[propertyKey].bind(controller);
 
     setCurrentInjector(injector);
     if (req.method === 'GET') {
@@ -91,8 +96,32 @@ function mapRouteParams(pattern: string, actualPath: string): Record<string, str
 
 function isRequestMatchesHandler(
   req: IncomingMessage,
-  handler: HandlerMetadata,
+  handler: HandlerMeta,
   basePath: string,
 ): boolean {
-  return req.url === `${basePath}${handler.path}` && req.method === handler.method;
+  const pattern = `${basePath}${handler.path}`;
+  const { url, method } = req;
+
+  if (!url) {
+    return false;
+  }
+
+  return isRequestUrlMatchesPattern(url, pattern) && method === handler.method;
+}
+
+function isRequestUrlMatchesPattern(url: string, pattern: string): boolean {
+  const patternParts = pattern.split('/');
+  const urlParts = url.split('/');
+
+  return urlParts.every((part, index) =>
+    isSegmentMatchesPattern(part, patternParts.at(index) ?? ''),
+  );
+}
+
+function isSegmentMatchesPattern(segment: string, pattern: string): boolean {
+  if (pattern.startsWith(':')) {
+    return true;
+  }
+
+  return segment === pattern;
 }
