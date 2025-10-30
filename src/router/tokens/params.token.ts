@@ -1,4 +1,4 @@
-import { InjectionToken, inject } from '@di';
+import { DIError, InjectionToken, inject } from '@di';
 
 export const PARAMS = new InjectionToken<Record<string, string>>('PARAMS');
 
@@ -8,7 +8,13 @@ export function params<T extends Record<string, string>>(param?: string): T | st
   const params = inject(PARAMS);
 
   if (param) {
-    return params[param];
+    const value = params[param];
+
+    if (!value) {
+      throw new DIError(`Param ${param} not found`);
+    }
+
+    return value;
   }
 
   return params as T;

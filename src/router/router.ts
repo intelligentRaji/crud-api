@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse, createServer } from 'node:http';
 
 import type { Constructor } from '@core';
-import { Injector, getCurrentInjector, inject, setCurrentInjector } from '@di';
+import { Injector, inject, runInInjectorContext } from '@di';
 import { Serializer } from '@serializer';
 
 import type { HandlerMeta } from './classes';
@@ -39,7 +39,13 @@ export class Router {
     metadata: HandlerMeta,
     controller: any,
   ) {
-    const parent = getCurrentInjector();
+    const propertyKey = metadata.propertyKey;
+
+    if (!propertyKey) {
+      throw new Error('Use method decorators to define handler');
+    }
+
+    const parent = inject(Injector);
     const injector = new Injector(parent, [
       {
         provide: REQ,
@@ -55,17 +61,11 @@ export class Router {
       },
     ]);
 
-    const propertyKey = metadata.propertyKey;
-
-    if (!propertyKey) {
-      throw new Error('Use method decorators to define handler');
-    }
-
     const handler = controller[propertyKey].bind(controller);
 
-    setCurrentInjector(injector);
-    this.processRequest(res, await handler());
-    setCurrentInjector(parent);
+    runInInjectorContext(async () => {
+      this.processRequest(res, await handler());
+    }, injector);
   }
 
   private processRequest(res: ServerResponse, result: unknown): void {

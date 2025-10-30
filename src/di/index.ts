@@ -4,3 +4,4 @@ export * from './types';
 export * from './injection-token';
 export * from './inject';
 export * from './context';
+export * from './errors';

@@ -40,8 +40,7 @@ export class Injector {
 
   constructor(parent: Injector | null = null, providers: Provider<any>[] = []) {
     this.parent = parent;
-    providers.forEach((provider) => this.provide(provider));
-    this.provide({ provide: Injector, useValue: this });
+    this.provide(...providers, { provide: Injector, useValue: this });
   }
 
   public get<T>(
