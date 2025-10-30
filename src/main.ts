@@ -1,5 +1,7 @@
 import 'reflect-metadata';
+
+import { Application } from '@core';
+
 import { AppModule } from './app/app.module';
-import { Application } from './core/application';
 
 Application.init(AppModule, { host: 'localhost', port: 3000 });

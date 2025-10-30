@@ -1,9 +1,8 @@
-import { getCurrentInjector } from '../di/context';
-import { Serializer } from '../serializing/serializer.service';
-import { Router } from '../routing/router';
-import { HOST, PORT } from '../routing/tokens';
-import type { Constructor } from './types/constructor';
-import { provideSerializer } from '../serializing/provide-serializer';
+import { getCurrentInjector } from '@di';
+import { HOST, PORT, Router } from '@router';
+import { Serializer, provideSerializer } from '@serializer';
+
+import type { Constructor } from './types';
 
 export interface ApplicationInitOptions {
   host: string;

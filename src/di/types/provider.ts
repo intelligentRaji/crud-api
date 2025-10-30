@@ -1,5 +1,6 @@
+import { type Constructor } from '@core';
+
 import { InjectionToken } from '../injection-token';
-import { type Constructor } from '../../core/types/constructor';
 
 export type Provider<T = any> =
   | ValueProvider<T>
@@ -8,22 +9,22 @@ export type Provider<T = any> =
   | FactoryProvider<T>;
 
 export interface ValueProvider<T> {
-  provide: InjectionToken<T> | Constructor<T>;
+  provide: InjectionToken<T>;
   useValue: T;
 }
 
 export interface ClassProvider<T> {
-  provide: InjectionToken<T> | Constructor<T>;
+  provide: InjectionToken<T>;
   useClass: Constructor<T>;
 }
 
 export interface ExistingProvider<T> {
-  provide: InjectionToken<T> | Constructor<T>;
-  useExisting: InjectionToken<T> | Constructor<T>;
+  provide: InjectionToken<T>;
+  useExisting: InjectionToken<T>;
 }
 
 export interface FactoryProvider<T> extends FactoryOptions<T> {
-  provide: InjectionToken<T> | Constructor<T>;
+  provide: InjectionToken<T>;
 }
 
 export interface FactoryOptions<T = any> {

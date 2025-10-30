@@ -1,7 +1,8 @@
+import { type Constructor } from '@core';
+
 import { getCurrentInjector, setCurrentInjector } from '../context';
-import { Injector } from '../injector/injector';
-import { type Constructor } from '../../core/types/constructor';
-import { type ClassProvider, type Provider } from '../types/provider';
+import { Injector } from '../injector';
+import { type ClassProvider, type Provider } from '../types';
 
 export interface ModuleMetadata {
   controllers?: Constructor<any>[];

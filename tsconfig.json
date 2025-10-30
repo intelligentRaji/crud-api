@@ -7,6 +7,7 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "baseUrl": "./src",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -20,7 +21,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "@di": ["di/index.ts"],
+      "@core": ["core/index.ts"],
+      "@serializer": ["serializer/index.ts"],
+      "@router": ["router/index.ts"]
+    }
   },
   "include": ["src"]
 }

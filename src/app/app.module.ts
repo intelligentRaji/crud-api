@@ -1,9 +1,8 @@
-import { Module } from '../di/decorators/module';
-import { AppController } from './controllers/app.controller';
-import { TestModule } from './test.module';
+import { Module } from '@di';
+import { UsersController } from './controllers/users.controller';
 
 @Module({
-  imports: [TestModule],
-  controllers: [AppController],
+  imports: [],
+  controllers: [UsersController],
 })
 export class AppModule {}
