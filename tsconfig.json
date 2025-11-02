@@ -26,7 +26,8 @@
       "@di": ["di/index.ts"],
       "@core": ["core/index.ts"],
       "@serializer": ["serializer/index.ts"],
-      "@router": ["router/index.ts"]
+      "@router": ["router/index.ts"],
+      "@cli": ["cli/index.ts"]
     }
   },
   "include": ["src"]
