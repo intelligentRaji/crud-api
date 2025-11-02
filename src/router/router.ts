@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse, createServer } from 'node:http';
 
-import type { Constructor } from '@core';
 import { Injector, inject, runInInjectorContext } from '@di';
 import { Serializer } from '@serializer';
 
@@ -18,14 +17,13 @@ export class Router {
     this.server.listen(this.port, this.host);
   }
 
-  public registerController(controller: any, constructor: Constructor): void {
-    const basePath = Reflect.getMetadata('basePath', constructor) as string;
+  public registerController(controller: any): void {
     const handlers = Reflect.getMetadata('handlers', controller) as HandlerMeta[];
 
     this.server.on('request', async (req, res) => {
       for (const handler of Object.values(handlers)) {
-        if (isRequestMatchesHandler(req, handler, basePath)) {
-          await this.handleRequest(req, res, basePath, handler, controller);
+        if (isRequestMatchesHandler(req, handler)) {
+          await this.handleRequest(req, res, handler, controller);
           break;
         }
       }
@@ -35,10 +33,9 @@ export class Router {
   private async handleRequest(
     req: IncomingMessage,
     res: ServerResponse,
-    basePath: string,
     metadata: HandlerMeta,
     controller: any,
-  ) {
+  ): Promise<void> {
     const propertyKey = metadata.propertyKey;
 
     if (!propertyKey) {
@@ -57,7 +54,7 @@ export class Router {
       },
       {
         provide: PARAMS,
-        useValue: mapRouteParams(`${basePath}${metadata.path ?? ''}`, req?.url || ''),
+        useValue: mapRouteParams(`${metadata.path ?? ''}`, req?.url || ''),
       },
     ]);
 
@@ -97,12 +94,8 @@ function mapRouteParams(pattern: string, actualPath: string): Record<string, str
   return result;
 }
 
-function isRequestMatchesHandler(
-  req: IncomingMessage,
-  handler: HandlerMeta,
-  basePath: string,
-): boolean {
-  const pattern = `${basePath}${handler.path}`;
+function isRequestMatchesHandler(req: IncomingMessage, handler: HandlerMeta): boolean {
+  const pattern = handler.path ?? '';
   const { url, method } = req;
 
   if (!url) {
