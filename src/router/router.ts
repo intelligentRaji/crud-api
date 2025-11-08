@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse, createServer } from 'node:http';
 
-import { Injector, inject, runInInjectorContext } from '@di';
+import { Injector, inject, runInInjectionContext } from '@di';
 import { Serializer } from '@serializer';
 
 import type { HandlerMeta } from './classes';
@@ -60,7 +60,7 @@ export class Router {
 
     const handler = controller[propertyKey].bind(controller);
 
-    runInInjectorContext(async () => {
+    runInInjectionContext(async () => {
       this.processRequest(res, await handler());
     }, injector);
   }

@@ -2,7 +2,7 @@ import { stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline';
 
 import { getMetadata } from '@core';
-import { Injector, inject, runInInjectorContext } from '@di';
+import { Injector, inject, runInInjectionContext } from '@di';
 
 import { CommandRegestry } from './command-regestry.service';
 import type { CommandMetadata } from './types/command';
@@ -30,7 +30,7 @@ export class Router {
     const parent = inject(Injector);
     const injector = new Injector(parent, []);
 
-    runInInjectorContext(async () => {
+    runInInjectionContext(async () => {
       await command.execute();
     }, injector);
   }

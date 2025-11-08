@@ -10,10 +10,12 @@ export function getCurrentInjector(): Injector {
   return currentInjector;
 }
 
-export function runInInjectorContext<T>(callback: () => T, injector: Injector): T {
+export function runInInjectionContext<T>(callback: () => T, injector: Injector): T {
+  const previousInjector = getCurrentInjector();
+
   setCurrentInjector(injector);
   const result = callback();
-  setCurrentInjector(injector);
+  setCurrentInjector(previousInjector);
 
   return result;
 }
