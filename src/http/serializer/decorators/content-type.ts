@@ -1,4 +1,4 @@
-import { HandlerMeta } from '@router';
+import { HandlerMeta } from '@http/router';
 
 import type { ContentTypeMap } from '../types';
 

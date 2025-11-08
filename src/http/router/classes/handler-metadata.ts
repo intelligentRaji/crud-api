@@ -1,36 +1,29 @@
-export interface HandlerMetadata {
-  path?: string;
-  propertyKey?: string;
-  method?: string;
-  serializeTo?: string;
-}
+import type { Method } from '../types';
+import type { HandlerMetadata } from '../types/handler-metadata';
 
 export class HandlerMeta implements HandlerMetadata {
-  static updateOn(target: any, propertyKey: string, metadata: HandlerMetadata): void {
-    const handlers = Reflect.getMetadata('handlers', target) ?? {};
-    const meta = handlers[propertyKey] ?? new HandlerMeta();
-
-    const updated = meta.set(metadata);
-
-    Reflect.defineMetadata('handlers', { ...handlers, [propertyKey]: updated }, target);
-  }
-
   private readonly _metadata: HandlerMetadata;
 
-  public get path(): string | undefined {
+  public get path(): string {
     return this._metadata.path;
   }
-  public get propertyKey(): string | undefined {
+  public get propertyKey(): string {
     return this._metadata.propertyKey;
   }
-  public get method(): string | undefined {
+  public get method(): Method {
     return this._metadata.method;
   }
   public get serializeTo(): string | undefined {
     return this._metadata.serializeTo;
   }
 
-  constructor(metadata: HandlerMetadata = {}) {
+  constructor(
+    metadata: HandlerMetadata = {
+      path: '',
+      propertyKey: '',
+      method: 'GET',
+    },
+  ) {
     this._metadata = metadata;
   }
 

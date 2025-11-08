@@ -25,8 +25,7 @@
     "paths": {
       "@di": ["di/index.ts"],
       "@core": ["core/index.ts"],
-      "@serializer": ["serializer/index.ts"],
-      "@router": ["router/index.ts"],
+      "@http/*": ["http/*"],
       "@cli": ["cli/index.ts"]
     }
   },

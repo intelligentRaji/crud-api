@@ -1,5 +1,6 @@
 import { type Constructor } from '@core';
 
+import { DIError } from './errors';
 import { InjectionToken } from './injection-token';
 import {
   type ClassProvider,
@@ -67,7 +68,7 @@ export class Injector {
         return null;
       }
 
-      throw new Error(`Dependency ${token.name} is not registered`);
+      throw new DIError(`Dependency ${token.name} is not registered`);
     }
 
     if (isProviderInitialized(provider)) {
