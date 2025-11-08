@@ -26,7 +26,7 @@ export class HttpModule {
         { provide: HOST, useValue: host },
         { provide: PORT, useValue: port },
       ],
-      exports: [Router, RouteRegestry, Serializer, HOST, PORT],
+      exports: [Router, RouteRegestry, Serializer, HOST, PORT, DEFAULT_CONTENT_TYPE],
     })(
       class HttpModuleForRoot {
         constructor() {

@@ -12,7 +12,7 @@ export function Controller(path: string) {
 
     for (const key in handlers) {
       const handler = handlers[key];
-      handlers[key] = handler.set({ path: `/${path}/${handler.path}` });
+      handlers[key] = handler.set({ path: `/${path}${handler.path}` });
     }
 
     defineMetadata(

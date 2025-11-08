@@ -37,22 +37,46 @@ export class RouteRegestry {
   }
 
   public findRoute(req: IncomingMessage): RouteData {
-    const method = this.handlers[req.method as Method];
+    const methodHandlers = this.handlers[req.method as Method];
 
-    if (!method) {
+    if (!methodHandlers) {
       return this.throwRouteNotFound(req);
     }
 
-    const route = method[req.url ?? ''];
+    let data: RouteData | undefined;
 
-    if (!route) {
+    for (const key in methodHandlers) {
+      if (this.isUrlMatchesPattern(req.url ?? '', key)) {
+        data = methodHandlers[key];
+        break;
+      }
+    }
+
+    if (!data) {
       return this.throwRouteNotFound(req);
     }
 
-    return route;
+    return data;
   }
 
   private throwRouteNotFound(req: IncomingMessage): never {
     throw new NotFoundError(`Route with path ${req.method}:${req.url} not found`);
+  }
+
+  private isUrlMatchesPattern(url: string, pattern: string): boolean {
+    const patternParts = pattern.split('/');
+    const urlParts = url.split('/');
+
+    return urlParts.every((part, index) =>
+      this.isSegmentMatchesPattern(part, patternParts.at(index) ?? ''),
+    );
+  }
+
+  private isSegmentMatchesPattern(segment: string, pattern: string): boolean {
+    if (pattern.startsWith(':')) {
+      return true;
+    }
+
+    return segment === pattern;
   }
 }
