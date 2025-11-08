@@ -1,5 +1,5 @@
-import { Handler } from './handler';
+import { Route } from './route';
 
 export function Delete(path: string = '') {
-  return Handler('DELETE', path);
+  return Route('DELETE', path);
 }

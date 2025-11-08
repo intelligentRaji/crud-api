@@ -3,6 +3,7 @@ import { type Constructor } from '@core';
 import { InjectionToken } from '../injection-token';
 
 export type Provider<T = any> =
+  | Constructor<T>
   | ValueProvider<T>
   | ClassProvider<T>
   | ExistingProvider<T>

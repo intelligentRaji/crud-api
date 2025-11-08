@@ -1,5 +1,5 @@
-import { Handler } from './handler';
+import { Route } from './route';
 
 export function Get(path: string = '') {
-  return Handler('GET', path);
+  return Route('GET', path);
 }

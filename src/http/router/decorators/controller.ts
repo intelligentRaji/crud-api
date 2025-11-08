@@ -11,10 +11,8 @@ export function Controller(path: string) {
     const handlers = existingMetadata.handlers || {};
 
     for (const key in handlers) {
-      if (Object.prototype.hasOwnProperty.call(handlers, key)) {
-        const handler = handlers[key];
-        handlers[key] = handler.set({ path: `/${path}/${handler.path}` });
-      }
+      const handler = handlers[key];
+      handlers[key] = handler.set({ path: `/${path}/${handler.path}` });
     }
 
     defineMetadata(

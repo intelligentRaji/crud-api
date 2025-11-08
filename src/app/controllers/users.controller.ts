@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put } from '@router';
+import { Controller, Delete, Get, Post, Put } from '@http/router';
 
 @Controller('api/users')
 export class UsersController {

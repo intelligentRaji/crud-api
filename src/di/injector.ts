@@ -80,9 +80,11 @@ export class Injector {
     return dependency;
   }
 
-  public provide(...providers: Provider<any>[]): void {
+  public provide(...providers: Provider[]): void {
     providers.forEach((provider) => {
-      this.providers.set(provider.provide.name, { provider });
+      let dependency = transformProvider(provider);
+
+      this.providers.set(dependency.provide.name, { provider: dependency });
     });
   }
 
@@ -123,4 +125,25 @@ function resolveFactoryProvider<T>(provider: FactoryProvider<T>): T {
   const { useFactory } = provider;
 
   return useFactory();
+}
+
+function transformProvider<T>(
+  provider: Provider<T> | Constructor<T>,
+): Exclude<Provider<T>, Constructor<T>> {
+  if (isProviderConstructor(provider)) {
+    return createClassProviderFromConstructor(provider);
+  }
+
+  return provider;
+}
+
+function isProviderConstructor<T>(target: Provider<T> | Constructor<T>): target is Constructor<T> {
+  return typeof target === 'function';
+}
+
+function createClassProviderFromConstructor<T>(target: Constructor<T>): ClassProvider<T> {
+  return {
+    provide: target,
+    useClass: target,
+  };
 }

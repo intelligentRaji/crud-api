@@ -16,7 +16,7 @@ export function getControllerMetadata(target: any): ControllerMetadata {
 }
 
 export function getHandlersMetadata(target: any): ControllerMetadata['handlers'] {
-  const metadata = getControllerMetadata(target);
+  const metadata = getMetadata(target);
 
   const handlers = metadata.handlers;
 
@@ -34,8 +34,8 @@ export function updateHandlerMetadata(
   propertyKey: string,
   metadata: HandlerMetadata,
 ): void {
-  const controller = getControllerMetadata(target);
-  const handlers = getHandlersMetadata(target);
+  const controller = getMetadata(target);
+  const handlers = controller.handlers ?? {};
 
   const meta = handlers[propertyKey] ?? new HandlerMeta();
 
