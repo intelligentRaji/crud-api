@@ -1,17 +1,18 @@
 import { IncomingMessage, ServerResponse, createServer } from 'node:http';
 
 import { Injector, inject, runInInjectionContext } from '@di';
-import { Serializer } from '@http/serializer';
 
 import { RouteError } from './errors';
 import { RouteRegestry } from './route-regestry.service';
-import { HOST, PARAMS, PORT, REQ, RES } from './tokens';
+import { HOST, MIDDLEWARE_CONTEXT, PARAMS, PORT, REQ, RES, RESPONSE_MIDDLEWARES } from './tokens';
+import type { Middleware } from './types/middleware';
 
 export class Router {
-  private readonly serializer = inject(Serializer);
   private readonly routeRegistry = inject(RouteRegestry);
+  private readonly responseMiddlewares = inject<Middleware[]>(RESPONSE_MIDDLEWARES);
   private readonly host = inject(HOST);
   private readonly port = inject(PORT);
+
   private readonly server = createServer();
 
   constructor() {
@@ -47,35 +48,24 @@ export class Router {
     ]);
 
     await runInInjectionContext(async () => {
-      const result = await handler();
-      this.processResponse(res, result);
+      const body = await handler();
+
+      injector.provide({
+        provide: MIDDLEWARE_CONTEXT,
+        useValue: { body, metadata },
+      });
+
+      await this.processResponse(res);
     }, injector);
   }
 
-  private processResponse(res: ServerResponse, result: unknown): void {
-    if (result === undefined) {
-      res.end();
-      return;
-    }
+  private async processResponse(res: ServerResponse): Promise<void> {
+    await this.runMiddlewares(this.responseMiddlewares);
 
-    const serialized = this.serializer.serialize(result);
-    res.write(serialized);
+    const { body } = inject(MIDDLEWARE_CONTEXT);
+
+    res.write(body);
     res.end();
-  }
-
-  private mapRouteParams(pattern: string, actualPath: string): Record<string, string> {
-    const patternParts = pattern.split('/');
-    const actualParts = actualPath.split('/');
-    const result: Record<string, string> = {};
-
-    patternParts.forEach((part, index) => {
-      if (part.startsWith(':')) {
-        const key = part.slice(1);
-        result[key] = actualParts[index];
-      }
-    });
-
-    return result;
   }
 
   private handleError(error: RouteError | unknown, res: ServerResponse): void {
@@ -99,5 +89,36 @@ export class Router {
         error: res.statusMessage,
       }),
     );
+  }
+
+  private mapRouteParams(pattern: string, actualPath: string): Record<string, string> {
+    const patternParts = pattern.split('/');
+    const actualParts = actualPath.split('/');
+    const result: Record<string, string> = {};
+
+    patternParts.forEach((part, index) => {
+      if (part.startsWith(':')) {
+        const key = part.slice(1);
+        result[key] = actualParts[index];
+      }
+    });
+
+    return result;
+  }
+
+  private async runMiddlewares(middlewares: Middleware[]): Promise<void> {
+    let index = -1;
+
+    const next = async () => {
+      index++;
+
+      const middleware = middlewares[index];
+
+      if (middleware) {
+        await middleware(next);
+      }
+    };
+
+    await next();
   }
 }
