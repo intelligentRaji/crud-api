@@ -56,9 +56,9 @@ function importModules(injector: Injector, imports: Constructor[]): void {
         },
       });
     });
-
-    new module();
   });
+
+  imports.forEach((module) => new module());
 }
 
 function retreiveExportTokens(exports: DIToken[]): DIToken[] {
@@ -69,8 +69,7 @@ function retreiveExportTokens(exports: DIToken[]): DIToken[] {
 
     if (metadata.module) {
       tokens.push(...metadata.exports);
-      console.log('name', exportToken.name);
-      console.log('exports', metadata.exports);
+      return;
     }
 
     tokens.push(exportToken);

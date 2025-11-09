@@ -9,7 +9,8 @@ export interface HttpModuleForRootOptions {
 }
 
 @Module({
-  providers: [Router, RouteRegestry, SerializerModule],
+  providers: [Router, RouteRegestry],
+  imports: [SerializerModule],
   exports: [Router, RouteRegestry, SerializerModule],
 })
 export class HttpModule {

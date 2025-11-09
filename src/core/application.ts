@@ -1,13 +1,10 @@
-import { getMetadata } from './metadata';
+import { assertIsModule } from '@di';
+
 import type { Constructor } from './types';
 
 export class Application {
   static init(module: Constructor) {
-    const metadata = getMetadata(module);
-
-    if (!metadata.module) {
-      throw new Error(`${module.name} is not a module, please use @Module decorator to init App`);
-    }
+    assertIsModule(module, 'Please use @Module decorator to init App');
 
     new module();
   }
