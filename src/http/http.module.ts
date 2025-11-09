@@ -13,13 +13,13 @@ const DEFAULT_PROVIDERS: Provider[] = [
   },
 ];
 
-export interface HttpModueForRootOptions {
+export interface HttpModuleForRootOptions {
   host: string;
   port: number;
 }
 
 export class HttpModule {
-  static forRoot({ host, port }: HttpModueForRootOptions) {
+  static forRoot({ host, port }: HttpModuleForRootOptions) {
     return Module({
       providers: [
         ...DEFAULT_PROVIDERS,

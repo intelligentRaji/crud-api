@@ -1,6 +1,6 @@
 import { type Constructor } from '@core';
 
-import { InjectionToken } from '../injection-token';
+import type { DIToken } from './token';
 
 export type Provider<T = any> =
   | Constructor<T>
@@ -9,25 +9,26 @@ export type Provider<T = any> =
   | ExistingProvider<T>
   | FactoryProvider<T>;
 
-export interface ValueProvider<T> {
-  provide: InjectionToken<T>;
+export interface ValueProvider<T = any> extends MultiProvider {
+  provide: DIToken<T>;
   useValue: T;
 }
 
-export interface ClassProvider<T> {
-  provide: InjectionToken<T>;
+export interface ClassProvider<T = any> extends MultiProvider {
+  provide: DIToken<T>;
   useClass: Constructor<T>;
 }
 
-export interface ExistingProvider<T> {
-  provide: InjectionToken<T>;
-  useExisting: InjectionToken<T>;
+export interface ExistingProvider<T = any> extends MultiProvider {
+  provide: DIToken<T>;
+  useExisting: DIToken<T>;
 }
 
-export interface FactoryProvider<T> extends FactoryOptions<T> {
-  provide: InjectionToken<T>;
-}
-
-export interface FactoryOptions<T = any> {
+export interface FactoryProvider<T = any> extends MultiProvider {
+  provide: DIToken<T>;
   useFactory: () => T;
+}
+
+export interface MultiProvider {
+  multi?: boolean;
 }

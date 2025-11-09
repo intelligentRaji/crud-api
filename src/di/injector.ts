@@ -1,13 +1,13 @@
 import { type Constructor } from '@core';
 
 import { DIError } from './errors';
-import { InjectionToken } from './injection-token';
 import {
   type ClassProvider,
   type FactoryProvider,
   type Provider,
   type ValueProvider,
 } from './types';
+import type { DIToken } from './types/token';
 
 type UninitializedProvider = {
   provider: Provider;
@@ -36,7 +36,7 @@ export type InjectionOptions = InjectionSelfOptions | InjectionSkipSelfOptions;
 export type InjectionOptionalOptions = InjectionOptions & { optional: true };
 
 export class Injector {
-  private readonly providers = new Map<string, ProviderData>();
+  private readonly providers = new Map<string, ProviderData | ProviderData[]>();
   private readonly parent: Injector | null = null;
 
   constructor(parent: Injector | null = null, providers: Provider<any>[] = []) {
@@ -44,15 +44,18 @@ export class Injector {
     this.provide(...providers, { provide: Injector, useValue: this });
   }
 
-  public get<T>(
-    token: InjectionToken<T> | Constructor<T>,
-    options: InjectionOptionalOptions,
-  ): T | null;
-  public get<T>(token: InjectionToken<T> | Constructor<T>, options?: InjectionOptions): T;
-  public get<T>(
-    token: InjectionToken<T> | Constructor<T>,
+  public get<T = any>(token: DIToken, options: InjectionOptionalOptions, resolve?: true): T | null;
+  public get<T = any>(token: DIToken, options?: InjectionOptions, resolve?: true): T;
+  public get<T = any>(
+    token: DIToken,
+    options?: InjectionOptions | InjectionOptionalOptions,
+    resolve?: false,
+  ): ProviderData | ProviderData[];
+  public get<T = any>(
+    token: DIToken,
     options: InjectionOptions | InjectionOptionalOptions = {},
-  ): T | null {
+    resolve = true,
+  ): T | null | ProviderData | ProviderData[] {
     let provider;
 
     if (!options.skipSelf) {
@@ -71,46 +74,72 @@ export class Injector {
       throw new DIError(`Dependency ${token.name} is not registered`);
     }
 
-    if (isProviderInitialized(provider)) {
-      return provider.value;
+    if (!resolve) {
+      return provider;
     }
 
-    const dependency = this.initializeProvider(provider);
-    this.providers.set(token.name, { value: dependency });
-    return dependency;
+    if (Array.isArray(provider)) {
+      return provider.map((p) => this.retreiveProviderValue(p, token)) as T;
+    }
+
+    return this.retreiveProviderValue(provider, token);
   }
 
   public provide(...providers: Provider[]): void {
     providers.forEach((provider) => {
       let dependency = transformProvider(provider);
 
+      if (dependency.multi) {
+        let existing = this.get(dependency.provide, { optional: true }, false);
+
+        if (Array.isArray(existing)) {
+          existing.push({ provider: dependency });
+        } else {
+          const providers: ProviderData[] = [{ provider: dependency }];
+
+          if (existing) {
+            providers.push(existing);
+          }
+
+          this.providers.set(dependency.provide.name, providers);
+        }
+
+        return;
+      }
+
       this.providers.set(dependency.provide.name, { provider: dependency });
     });
   }
 
-  private initializeProvider(providerData: UninitializedProvider): any {
+  private retreiveProviderValue(providerData: ProviderData, token: DIToken): any {
+    if (isProviderInitialized(providerData)) {
+      return providerData.value;
+    }
+
     const { provider } = providerData;
 
+    let value;
+
     if ('useValue' in provider) {
-      return resolveValueProvider(provider);
+      value = resolveValueProvider(provider);
     }
 
     if ('useClass' in provider) {
-      return resolveClassProvider(provider);
+      value = resolveClassProvider(provider);
     }
 
     if ('useFactory' in provider) {
-      return resolveFactoryProvider(provider);
+      value = resolveFactoryProvider(provider);
     }
 
     if ('useExisting' in provider) {
-      return this.get(provider.useExisting);
+      value = this.get(provider.useExisting);
     }
-  }
-}
 
-function isProviderInitialized(provider: ProviderData): provider is InitializedProvider {
-  return 'value' in provider;
+    this.providers.set(token.name, { value });
+
+    return value;
+  }
 }
 
 function resolveValueProvider<T>(provider: ValueProvider<T>): T {
@@ -125,6 +154,10 @@ function resolveFactoryProvider<T>(provider: FactoryProvider<T>): T {
   const { useFactory } = provider;
 
   return useFactory();
+}
+
+function isProviderInitialized(provider: ProviderData): provider is InitializedProvider {
+  return 'value' in provider;
 }
 
 function transformProvider<T>(
