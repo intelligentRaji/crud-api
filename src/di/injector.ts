@@ -86,28 +86,28 @@ export class Injector {
   }
 
   public provide(...providers: Provider[]): void {
-    providers.forEach((provider) => {
-      let dependency = transformToProvider(provider);
+    providers.forEach((p) => {
+      let provider = transformToProvider(p);
 
-      if (dependency.multi) {
-        let existing = this.get(dependency.provide, { optional: true }, false);
+      if (provider.multi) {
+        let existing = this.get(provider.provide, { optional: true }, false);
 
         if (Array.isArray(existing)) {
-          existing.push({ provider: dependency });
+          existing.push({ provider });
         } else {
-          const providers: ProviderData[] = [{ provider: dependency }];
+          const providers: ProviderData[] = [{ provider }];
 
           if (existing) {
             providers.push(existing);
           }
 
-          this.providers.set(dependency.provide.name, providers);
+          this.providers.set(provider.provide.name, providers);
         }
 
         return;
       }
 
-      this.providers.set(dependency.provide.name, { provider: dependency });
+      this.providers.set(provider.provide.name, { provider });
     });
   }
 

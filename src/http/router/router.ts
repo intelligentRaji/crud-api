@@ -4,7 +4,7 @@ import { Injector, inject, runInInjectionContext } from '@di';
 
 import { RouteError } from './errors';
 import { RouteRegestry } from './route-regestry.service';
-import { HOST, MIDDLEWARE_CONTEXT, PARAMS, PORT, REQ, RES, RESPONSE_MIDDLEWARES } from './tokens';
+import { HOST, METADATA, PARAMS, PORT, REQUEST, RESPONSE, RESPONSE_MIDDLEWARES } from './tokens';
 import type { Middleware } from './types/middleware';
 
 export class Router {
@@ -42,27 +42,17 @@ export class Router {
 
     const parent = inject(Injector);
     const injector = new Injector(parent, [
-      { provide: REQ, useValue: req },
-      { provide: RES, useValue: res },
+      { provide: REQUEST, useValue: req },
+      { provide: RESPONSE, useValue: res },
       { provide: PARAMS, useValue: this.mapRouteParams(metadata.path, req.url || '') },
+      { provide: METADATA, useValue: metadata },
     ]);
 
-    await runInInjectionContext(async () => {
+    const body = await runInInjectionContext(async () => {
       const body = await handler();
 
-      inject(Injector).provide({
-        provide: MIDDLEWARE_CONTEXT,
-        useValue: { body, metadata },
-      });
-
-      await this.processResponse(res);
+      return this.runMiddlewares(this.responseMiddlewares, body);
     }, injector);
-  }
-
-  private async processResponse(res: ServerResponse): Promise<void> {
-    await this.runMiddlewares(this.responseMiddlewares);
-
-    const { body } = inject(MIDDLEWARE_CONTEXT);
 
     res.write(body);
     res.end();
@@ -105,19 +95,21 @@ export class Router {
     return result;
   }
 
-  private async runMiddlewares(middlewares: Middleware[]): Promise<void> {
+  private async runMiddlewares(middlewares: Middleware[], body: any): Promise<any> {
     let index = -1;
 
-    const next = async () => {
+    const next = async (body: any) => {
       index++;
 
       const middleware = middlewares[index];
 
       if (middleware) {
-        await middleware(next);
+        await middleware(body, next);
       }
+
+      return body;
     };
 
-    await next();
+    return await next(body);
   }
 }

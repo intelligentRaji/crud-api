@@ -10,11 +10,11 @@ export function getCurrentInjector(): Injector {
   return currentInjector;
 }
 
-export function runInInjectionContext<T>(callback: () => T, injector: Injector): T {
+export async function runInInjectionContext<T>(callback: () => T, injector: Injector): Promise<T> {
   const previousInjector = getCurrentInjector();
 
   setCurrentInjector(injector);
-  const result = callback();
+  const result = await callback();
   setCurrentInjector(previousInjector);
 
   return result;

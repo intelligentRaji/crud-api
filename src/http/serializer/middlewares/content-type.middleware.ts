@@ -1,19 +1,16 @@
 import { inject } from '@di';
-import { type Middleware, context, response } from '@http/router';
+import { METADATA, type Middleware, response } from '@http/router';
 
 import { Serializer } from '../serializer.service';
 import { DEFAULT_CONTENT_TYPE } from '../tokens';
 
-export const contentTypeMiddleware: Middleware = (next) => {
-  const data = context();
-  const { body, metadata } = data;
-
+export const contentTypeMiddleware: Middleware = async (body, next) => {
+  const metadata = inject(METADATA);
   const res = response();
   const defaultContentType = inject(DEFAULT_CONTENT_TYPE);
   const serializer = inject(Serializer);
 
   res.setHeader('Content-Type', metadata.serializeTo || defaultContentType);
-  data.body = serializer.serialize(body, metadata.serializeTo);
 
-  return next();
+  return await next(serializer.serialize(body, metadata.serializeTo));
 };

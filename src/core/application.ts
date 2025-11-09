@@ -1,11 +1,27 @@
-import { assertIsModule } from '@di';
+import { assertIsModule, getCurrentInjector, getModuleMetadata, inject } from '@di';
 
+import { APP_INITIALIZER } from './tokens';
 import type { Constructor } from './types';
 
 export class Application {
-  static init(module: Constructor) {
-    assertIsModule(module, 'Please use @Module decorator to init App');
+  static async init(module: Constructor) {
+    assertIsModule(module, 'Please use @Module decorator to init Application');
+    const rootInjector = getCurrentInjector();
+    const metadata = getModuleMetadata(module);
+
+    // @ts-ignore
+    rootInjector.providers = metadata.injector.providers;
+
+    await runAppInitializers();
 
     new module();
+  }
+}
+
+async function runAppInitializers() {
+  const initializers = inject<Function[]>(APP_INITIALIZER);
+
+  for (const initializer of initializers) {
+    await initializer();
   }
 }

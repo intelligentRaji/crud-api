@@ -1,31 +1,19 @@
-import { Module, extendModule, inject } from '@di';
+import { Module, extendModule } from '@di';
 
-import { HOST, PORT, RouteRegestry, Router } from './router';
+import { RouterModule, type RouterModuleForRootOptions } from './router';
 import { SerializerModule } from './serializer';
 
-export interface HttpModuleForRootOptions {
-  host: string;
-  port: number;
-}
+export type HttpModuleForRootOptions = RouterModuleForRootOptions;
 
 @Module({
-  providers: [Router, RouteRegestry],
   imports: [SerializerModule],
-  exports: [Router, RouteRegestry, SerializerModule],
+  exports: [SerializerModule],
 })
 export class HttpModule {
   static forRoot({ host, port }: HttpModuleForRootOptions) {
     return extendModule(HttpModule, {
-      providers: [
-        { provide: HOST, useValue: host },
-        { provide: PORT, useValue: port },
-      ],
-      exports: [HOST, PORT],
+      imports: [RouterModule.forRoot({ host, port })],
+      exports: [RouterModule],
     });
-  }
-
-  constructor() {
-    // Instantiates router
-    inject(Router);
   }
 }

@@ -14,12 +14,12 @@ export function Module({
   controllers = [],
   imports = [],
   exports = [],
-}: ModuleDecoratorOptions) {
+}: ModuleDecoratorOptions = {}) {
   return function <T extends Constructor>(target: T) {
     checkProvidersOnModules(providers);
 
     const parent = getCurrentInjector();
-    const injector = new Injector(parent, providers);
+    const injector = (target as any)['__root'] ? parent : new Injector(parent);
 
     const moduleMetadata: ModuleMetadata = {
       module: true,
@@ -33,6 +33,7 @@ export function Module({
 
     defineMetadata(moduleMetadata, target);
     importModules(injector, imports);
+    injector.provide(...providers);
 
     return class extends target {
       constructor(...args: any[]) {
@@ -47,7 +48,7 @@ export function Module({
 
 function importModules(injector: Injector, imports: Constructor[]): void {
   imports.forEach((module) => {
-    assertIsModule(module, `Cannot import providers from ${module.name}`);
+    assertIsModule(module, `"imports" accepts only modules`);
     const moduleMetadata = getModuleMetadata(module);
 
     moduleMetadata.exports.forEach((token) => {
@@ -59,8 +60,6 @@ function importModules(injector: Injector, imports: Constructor[]): void {
       });
     });
   });
-
-  imports.forEach((module) => new module());
 }
 
 function retreiveExportTokens(exports: DIToken[]): DIToken[] {
