@@ -4,6 +4,6 @@ import { InjectionToken, inject } from '@di';
 
 export const REQ = new InjectionToken<IncomingMessage>('REQ');
 
-export function req() {
+export function request() {
   return inject(REQ);
 }

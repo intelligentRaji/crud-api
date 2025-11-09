@@ -1,4 +1,4 @@
-import type { HandlerMeta } from '../classes';
+import type { HandlerMeta } from '@http/shared';
 
 export interface ControllerMetadata {
   controller: boolean;

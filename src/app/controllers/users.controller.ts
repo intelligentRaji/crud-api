@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put } from '@http/router';
+import { Controller, Delete, Get, params, Post, Put } from '@http/router';
 
 @Controller('api/users')
 export class UsersController {
@@ -19,7 +19,7 @@ export class UsersController {
 
   @Put(':id')
   public update() {
-    return 'update';
+    return params();
   }
 
   @Delete(':id')

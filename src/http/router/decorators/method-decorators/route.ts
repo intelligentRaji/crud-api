@@ -1,4 +1,4 @@
-import { updateHandlerMetadata } from '@http/router/helpers';
+import { updateHandlerMetadata } from '@http/shared';
 
 import type { Method } from '../../types';
 

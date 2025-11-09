@@ -1,42 +1,35 @@
-import { type Constructor, defineMetadata, getMetadata } from '@core';
+import { assertIsModule } from 'di/errors';
+import { getModuleMetadata } from 'di/helpers';
+import type { DIToken } from 'di/types/token';
+
+import { type Constructor, defineMetadata } from '@core';
 
 import { getCurrentInjector, setCurrentInjector } from '../context';
 import { Injector } from '../injector';
-import { type Provider } from '../types';
-import { type DIToken } from '../types/token';
+import { type ModuleMetadata } from '../types';
 
-export interface ModuleMetadata {
-  controllers?: Constructor[];
-  providers?: Provider[];
-  imports?: Constructor[];
-  exports?: DIToken[];
-}
+export type ModuleDecoratorOptions = Partial<Omit<ModuleMetadata, 'module' | 'injector'>>;
 
 export function Module({
   providers = [],
   controllers = [],
   imports = [],
   exports = [],
-}: ModuleMetadata) {
+}: ModuleDecoratorOptions) {
   return function <T extends Constructor>(target: T) {
     const parent = getCurrentInjector();
     const injector = new Injector(parent, providers);
 
-    const exportsProviders = exports.map((token) => {
-      return {
-        provide: token,
-        useFactory: () => injector.get(token),
-      };
-    });
+    const moduleMetadata: ModuleMetadata = {
+      module: true,
+      exports: retreiveExportTokens(exports),
+      providers,
+      injector,
+      controllers,
+      imports,
+    };
 
-    defineMetadata(
-      {
-        module: true,
-        exports: exportsProviders,
-      },
-      target,
-    );
-
+    defineMetadata(moduleMetadata, target);
     importModules(injector, imports);
 
     return class extends target {
@@ -52,18 +45,36 @@ export function Module({
 
 function importModules(injector: Injector, imports: Constructor[]): void {
   imports.forEach((module) => {
-    const moduleMetadata = getMetadata(module);
+    assertIsModule(module, `Cannot import providers from ${module.name}`);
+    const moduleMetadata = getModuleMetadata(module);
 
-    if (!moduleMetadata.module) {
-      throw new Error(`${module.name} is not a module`);
-    }
-
-    const exports: Provider[] = moduleMetadata.exports;
-
-    exports.forEach((exportProvider) => {
-      injector.provide(exportProvider);
+    moduleMetadata.exports.forEach((token) => {
+      injector.provide({
+        provide: token,
+        useFactory() {
+          return moduleMetadata.injector.get(token);
+        },
+      });
     });
 
     new module();
   });
+}
+
+function retreiveExportTokens(exports: DIToken[]): DIToken[] {
+  const tokens: DIToken[] = [];
+
+  exports.forEach((exportToken) => {
+    const metadata = getModuleMetadata(exportToken);
+
+    if (metadata.module) {
+      tokens.push(...metadata.exports);
+      console.log('name', exportToken.name);
+      console.log('exports', metadata.exports);
+    }
+
+    tokens.push(exportToken);
+  });
+
+  return tokens;
 }

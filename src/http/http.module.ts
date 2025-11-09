@@ -1,38 +1,30 @@
-import { Module, type Provider, inject } from '@di';
+import { Module, extendModule, inject } from '@di';
 
 import { HOST, PORT, RouteRegestry, Router } from './router';
-import { DEFAULT_CONTENT_TYPE, Serializer } from './serializer';
-
-const DEFAULT_PROVIDERS: Provider[] = [
-  Router,
-  RouteRegestry,
-  Serializer,
-  {
-    provide: DEFAULT_CONTENT_TYPE,
-    useValue: 'application/json',
-  },
-];
+import { SerializerModule } from './serializer';
 
 export interface HttpModuleForRootOptions {
   host: string;
   port: number;
 }
 
+@Module({
+  providers: [Router, RouteRegestry, SerializerModule],
+  exports: [Router, RouteRegestry, SerializerModule],
+})
 export class HttpModule {
   static forRoot({ host, port }: HttpModuleForRootOptions) {
-    return Module({
+    return extendModule(HttpModule, {
       providers: [
-        ...DEFAULT_PROVIDERS,
         { provide: HOST, useValue: host },
         { provide: PORT, useValue: port },
       ],
-      exports: [Router, RouteRegestry, Serializer, HOST, PORT, DEFAULT_CONTENT_TYPE],
-    })(
-      class HttpModuleForRoot {
-        constructor() {
-          inject(Router);
-        }
-      },
-    );
+      exports: [HOST, PORT],
+    });
+  }
+
+  constructor() {
+    // Instantiates router
+    inject(Router);
   }
 }

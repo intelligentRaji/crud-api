@@ -50,7 +50,7 @@ export class Router {
     await runInInjectionContext(async () => {
       const body = await handler();
 
-      injector.provide({
+      inject(Injector).provide({
         provide: MIDDLEWARE_CONTEXT,
         useValue: { body, metadata },
       });
@@ -83,7 +83,6 @@ export class Router {
     res.statusCode = statusCode;
     res.statusMessage = statusMessage;
 
-    res.setHeader('Content-Type', 'application/json');
     res.end(
       JSON.stringify({
         error: res.statusMessage,

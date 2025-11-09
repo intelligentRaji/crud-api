@@ -4,6 +4,6 @@ import { InjectionToken, inject } from '@di';
 
 export const RES = new InjectionToken<ServerResponse>('RES');
 
-export function res() {
+export function response() {
   return inject(RES);
 }

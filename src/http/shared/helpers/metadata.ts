@@ -1,9 +1,8 @@
-import { MetadataError } from 'core/errors/metadata.error';
-
-import { defineMetadata, getMetadata } from '@core';
+import { MetadataError, defineMetadata, getMetadata } from '@core';
+import type { ControllerMetadata } from '@http/router';
 
 import { HandlerMeta } from '../classes';
-import type { ControllerMetadata, HandlerMetadata } from '../types';
+import type { HandlerMetadata } from '../types';
 
 export function getControllerMetadata(target: any): ControllerMetadata {
   const metadata = getMetadata(target);
@@ -32,7 +31,7 @@ export function getHandlersMetadata(target: any): ControllerMetadata['handlers']
 export function updateHandlerMetadata(
   target: any,
   propertyKey: string,
-  metadata: HandlerMetadata,
+  metadata: Partial<HandlerMetadata>,
 ): void {
   const controller = getMetadata(target);
   const handlers = controller.handlers ?? {};

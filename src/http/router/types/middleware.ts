@@ -1,4 +1,4 @@
-import type { HandlerMetadata } from './handler-metadata';
+import type { HandlerMetadata } from '@http/shared';
 
 export type Middleware = (next: () => Promise<void>) => Promise<void> | void;
 

@@ -26,6 +26,7 @@
       "@di": ["di/index.ts"],
       "@core": ["core/index.ts"],
       "@http/*": ["http/*"],
+      "@http": ["http/index.ts"],
       "@cli": ["cli/index.ts"]
     }
   },

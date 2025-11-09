@@ -87,7 +87,7 @@ export class Injector {
 
   public provide(...providers: Provider[]): void {
     providers.forEach((provider) => {
-      let dependency = transformProvider(provider);
+      let dependency = transformToProvider(provider);
 
       if (dependency.multi) {
         let existing = this.get(dependency.provide, { optional: true }, false);
@@ -160,7 +160,7 @@ function isProviderInitialized(provider: ProviderData): provider is InitializedP
   return 'value' in provider;
 }
 
-function transformProvider<T>(
+function transformToProvider<T>(
   provider: Provider<T> | Constructor<T>,
 ): Exclude<Provider<T>, Constructor<T>> {
   if (isProviderConstructor(provider)) {
@@ -170,7 +170,7 @@ function transformProvider<T>(
   return provider;
 }
 
-function isProviderConstructor<T>(target: Provider<T> | Constructor<T>): target is Constructor<T> {
+function isProviderConstructor<T>(target: Provider<T>): target is Constructor<T> {
   return typeof target === 'function';
 }
 

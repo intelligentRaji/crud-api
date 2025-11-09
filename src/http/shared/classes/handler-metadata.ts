@@ -1,19 +1,18 @@
-import type { Method } from '../types';
-import type { HandlerMetadata } from '../types/handler-metadata';
+import type { HandlerMetadata } from '../types';
 
 export class HandlerMeta implements HandlerMetadata {
   private readonly _metadata: HandlerMetadata;
 
-  public get path(): string {
+  public get path() {
     return this._metadata.path;
   }
-  public get propertyKey(): string {
+  public get propertyKey() {
     return this._metadata.propertyKey;
   }
-  public get method(): Method {
+  public get method() {
     return this._metadata.method;
   }
-  public get serializeTo(): string | undefined {
+  public get serializeTo() {
     return this._metadata.serializeTo;
   }
 

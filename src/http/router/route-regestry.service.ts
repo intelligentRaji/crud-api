@@ -1,8 +1,8 @@
-import type { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
 
-import type { HandlerMeta } from './classes';
+import { type HandlerMeta, getHandlersMetadata } from '@http/shared';
+
 import { NotFoundError } from './errors';
-import { getHandlersMetadata } from './helpers';
 import type { Method } from './types';
 
 export type RouteData = {
