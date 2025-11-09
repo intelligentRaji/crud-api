@@ -6,9 +6,10 @@ import type { DIToken } from './token';
 
 export interface ModuleMetadata {
   module: true;
+  injector: Injector;
+  name: string;
   controllers: Constructor[];
   providers: Provider[];
   imports: Constructor[];
   exports: DIToken[];
-  injector: Injector;
 }

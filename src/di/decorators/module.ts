@@ -1,14 +1,13 @@
-import { assertIsModule } from 'di/errors';
-import { getModuleMetadata } from 'di/helpers';
-import type { DIToken } from 'di/types/token';
-
-import { type Constructor, defineMetadata } from '@core';
+import { type Constructor, MetadataError, defineMetadata } from '@core';
 
 import { getCurrentInjector, setCurrentInjector } from '../context';
+import { assertIsModule } from '../errors';
+import { getModuleMetadata } from '../helpers';
 import { Injector } from '../injector';
-import { type ModuleMetadata } from '../types';
+import { type ModuleMetadata, type Provider } from '../types';
+import type { DIToken } from '../types/token';
 
-export type ModuleDecoratorOptions = Partial<Omit<ModuleMetadata, 'module' | 'injector'>>;
+export type ModuleDecoratorOptions = Partial<Omit<ModuleMetadata, 'module' | 'injector' | 'name'>>;
 
 export function Module({
   providers = [],
@@ -17,14 +16,17 @@ export function Module({
   exports = [],
 }: ModuleDecoratorOptions) {
   return function <T extends Constructor>(target: T) {
+    checkProvidersOnModules(providers);
+
     const parent = getCurrentInjector();
     const injector = new Injector(parent, providers);
 
     const moduleMetadata: ModuleMetadata = {
       module: true,
+      injector,
+      name: target.name,
       exports: retreiveExportTokens(exports),
       providers,
-      injector,
       controllers,
       imports,
     };
@@ -76,4 +78,16 @@ function retreiveExportTokens(exports: DIToken[]): DIToken[] {
   });
 
   return tokens;
+}
+
+function checkProvidersOnModules(providers: Provider[]) {
+  providers.forEach((provider) => {
+    const metadata = getModuleMetadata(provider);
+
+    if (metadata.module) {
+      throw new MetadataError(
+        `Cannot provide module "${metadata.name}", please put it in "imports" array instead of "providers"`,
+      );
+    }
+  });
 }
