@@ -19,7 +19,7 @@ export function Module({
     checkProvidersOnModules(providers);
 
     const parent = getCurrentInjector();
-    const injector = (target as any)['__root'] ? parent : new Injector(parent);
+    const injector = new Injector(parent);
 
     const moduleMetadata: ModuleMetadata = {
       module: true,

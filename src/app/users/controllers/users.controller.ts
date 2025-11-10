@@ -18,7 +18,7 @@ export class UsersController {
 
   @Post()
   public create() {
-    const {body} = request();
+    const { body } = request();
 
     return this.userService.create(body);
   }
