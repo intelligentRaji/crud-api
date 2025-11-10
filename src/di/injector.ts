@@ -5,6 +5,7 @@ import {
   type ClassProvider,
   type FactoryProvider,
   type Provider,
+  type Providers,
   type ValueProvider,
 } from './types';
 import type { DIToken } from './types/token';
@@ -39,7 +40,7 @@ export class Injector {
   private readonly providers = new Map<string, ProviderData | ProviderData[]>();
   private readonly parent: Injector | null = null;
 
-  constructor(parent: Injector | null = null, providers: Provider<any>[] = []) {
+  constructor(parent: Injector | null = null, providers: Providers = []) {
     this.parent = parent;
     this.provide(...providers, { provide: Injector, useValue: this });
   }
@@ -85,8 +86,8 @@ export class Injector {
     return this.retreiveProviderValue(provider, token);
   }
 
-  public provide(...providers: Provider[]): void {
-    providers.forEach((p) => {
+  public provide(...providers: Providers): void {
+    providers.flat(Infinity).forEach((p) => {
       let provider = transformToProvider(p);
 
       if (provider.multi) {
@@ -142,15 +143,15 @@ export class Injector {
   }
 }
 
-function resolveValueProvider<T>(provider: ValueProvider<T>): T {
+function resolveValueProvider(provider: ValueProvider): any {
   return provider.useValue;
 }
 
-function resolveClassProvider<T>(provider: ClassProvider<T>): T {
+function resolveClassProvider(provider: ClassProvider): any {
   return new provider.useClass();
 }
 
-function resolveFactoryProvider<T>(provider: FactoryProvider<T>): T {
+function resolveFactoryProvider(provider: FactoryProvider): any {
   const { useFactory } = provider;
 
   return useFactory();
@@ -160,9 +161,7 @@ function isProviderInitialized(provider: ProviderData): provider is InitializedP
   return 'value' in provider;
 }
 
-function transformToProvider<T>(
-  provider: Provider<T> | Constructor<T>,
-): Exclude<Provider<T>, Constructor<T>> {
+function transformToProvider(provider: Provider | Constructor): Exclude<Provider, Constructor> {
   if (isProviderConstructor(provider)) {
     return createClassProviderFromConstructor(provider);
   }
@@ -170,11 +169,11 @@ function transformToProvider<T>(
   return provider;
 }
 
-function isProviderConstructor<T>(target: Provider<T>): target is Constructor<T> {
+function isProviderConstructor(target: Provider): target is Constructor {
   return typeof target === 'function';
 }
 
-function createClassProviderFromConstructor<T>(target: Constructor<T>): ClassProvider<T> {
+function createClassProviderFromConstructor(target: Constructor): ClassProvider {
   return {
     provide: target,
     useClass: target,

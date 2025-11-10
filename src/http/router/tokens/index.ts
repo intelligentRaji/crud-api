@@ -5,3 +5,4 @@ export * from './host.token';
 export * from './port.token';
 export * from './middleware';
 export * from './metadata.token';
+export * from './http-code.token';

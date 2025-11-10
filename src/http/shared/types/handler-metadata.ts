@@ -6,4 +6,5 @@ export interface HandlerMetadata {
   propertyKey: string;
   method: Method;
   serializeTo?: keyof ContentTypeMap;
+  httpCode?: number;
 }

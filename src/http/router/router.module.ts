@@ -2,8 +2,9 @@ import { extendModule, inject, Module } from "@di";
 
 import { Router } from "./router";
 import { RouteRegestry } from "./route-regestry.service";
-import { HOST, PORT } from "./tokens";
+import { DEFAULT_HTTP_CODE, HOST, MIDDLEWARE, PORT, provideMiddlewares } from "./tokens";
 import { APP_INITIALIZER, provideAppInitializer } from "@core";
+import { HttpCodeMiddleware } from "./middlewares";
 
 export interface RouterModuleForRootOptions {
   host: string;
@@ -13,13 +14,20 @@ export interface RouterModuleForRootOptions {
 @Module({
   providers: [
     Router, 
-    RouteRegestry, 
+    RouteRegestry,
+    {
+      provide: DEFAULT_HTTP_CODE,
+      useValue: 200,
+    },
+    provideMiddlewares([
+      HttpCodeMiddleware,
+    ]),
     provideAppInitializer(() => {
       // Instantiates router
       inject(Router);
     })
   ],
-  exports: [Router, RouteRegestry, APP_INITIALIZER],
+  exports: [Router, RouteRegestry, APP_INITIALIZER, DEFAULT_HTTP_CODE, MIDDLEWARE],
 })
 export class RouterModule {
   static forRoot({ host, port }: RouterModuleForRootOptions) {

@@ -39,6 +39,7 @@ export function Module({
       constructor(...args: any[]) {
         setCurrentInjector(injector);
         super(...args);
+        imports.forEach((module) => new module());
         controllers.forEach((controller) => new controller());
         setCurrentInjector(parent);
       }

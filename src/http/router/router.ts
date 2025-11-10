@@ -4,12 +4,12 @@ import { Injector, inject, runInInjectionContext } from '@di';
 
 import { RouteError } from './errors';
 import { RouteRegestry } from './route-regestry.service';
-import { HOST, METADATA, PARAMS, PORT, REQUEST, RESPONSE, RESPONSE_MIDDLEWARES } from './tokens';
+import { HOST, METADATA, MIDDLEWARE, PARAMS, PORT, REQUEST, RESPONSE } from './tokens';
 import type { Middleware } from './types/middleware';
 
 export class Router {
   private readonly routeRegistry = inject(RouteRegestry);
-  private readonly responseMiddlewares = inject<Middleware[]>(RESPONSE_MIDDLEWARES);
+  private readonly responseMiddlewares = inject(MIDDLEWARE);
   private readonly host = inject(HOST);
   private readonly port = inject(PORT);
 

@@ -2,31 +2,39 @@ import { type Constructor } from '@core';
 
 import type { DIToken } from './token';
 
-export type Provider<T = any> =
-  | Constructor<T>
-  | ValueProvider<T>
-  | ClassProvider<T>
-  | ExistingProvider<T>
-  | FactoryProvider<T>;
+type FlattenProviders<T> = T extends Provider
+  ? T
+  : T extends (infer U)[]
+    ? FlattenProviders<U>[]
+    : never;
 
-export interface ValueProvider<T = any> extends MultiProvider {
-  provide: DIToken<T>;
-  useValue: T;
+export type Providers<T = any> = FlattenProviders<T>[];
+
+export type Provider =
+  | Constructor
+  | ValueProvider
+  | ClassProvider
+  | ExistingProvider
+  | FactoryProvider;
+
+export interface ValueProvider extends MultiProvider {
+  provide: DIToken;
+  useValue: any;
 }
 
-export interface ClassProvider<T = any> extends MultiProvider {
-  provide: DIToken<T>;
-  useClass: Constructor<T>;
+export interface ClassProvider extends MultiProvider {
+  provide: DIToken;
+  useClass: Constructor;
 }
 
-export interface ExistingProvider<T = any> extends MultiProvider {
-  provide: DIToken<T>;
-  useExisting: DIToken<T>;
+export interface ExistingProvider extends MultiProvider {
+  provide: DIToken;
+  useExisting: DIToken;
 }
 
-export interface FactoryProvider<T = any> extends MultiProvider {
-  provide: DIToken<T>;
-  useFactory: () => T;
+export interface FactoryProvider extends MultiProvider {
+  provide: DIToken;
+  useFactory: () => any;
 }
 
 export interface MultiProvider {

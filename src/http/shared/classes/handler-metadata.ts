@@ -15,6 +15,9 @@ export class HandlerMeta implements HandlerMetadata {
   public get serializeTo() {
     return this._metadata.serializeTo;
   }
+  public get httpCode() {
+    return this._metadata.httpCode;
+  }
 
   constructor(
     metadata: HandlerMetadata = {
