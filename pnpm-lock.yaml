@@ -14,6 +14,9 @@ importers:
       tsx:
         specifier: ^4.20.6
         version: 4.20.6
+      uuid:
+        specifier: ^13.0.0
+        version: 13.0.0
     devDependencies:
       '@trivago/prettier-plugin-sort-imports':
         specifier: ^5.2.2
@@ -601,6 +604,10 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+    hasBin: true
+
   vite-tsconfig-paths@5.1.4:
     resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
     peerDependencies:
@@ -1029,6 +1036,8 @@ snapshots:
   typescript@5.9.3: {}
 
   undici-types@7.16.0: {}
+
+  uuid@13.0.0: {}
 
   vite-tsconfig-paths@5.1.4(rolldown-vite@7.1.14(@types/node@24.9.1)(esbuild@0.25.11)(tsx@4.20.6))(typescript@5.9.3):
     dependencies:
