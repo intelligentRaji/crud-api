@@ -1,13 +1,7 @@
-import { type Constructor } from '@core';
+import { type Constructor, getMetadata } from '@core';
 
 import { DIError } from './errors';
-import {
-  type ClassProvider,
-  type FactoryProvider,
-  type Provider,
-  type Providers,
-  type ValueProvider,
-} from './types';
+import { type ClassProvider, type Provider, type Providers } from './types';
 import type { DIToken } from './types/token';
 
 type UninitializedProvider = {
@@ -45,17 +39,26 @@ export class Injector {
     this.provide(...providers, { provide: Injector, useValue: this });
   }
 
-  public get<T = any>(token: DIToken, options: InjectionOptionalOptions, resolve?: true): T | null;
-  public get<T = any>(token: DIToken, options?: InjectionOptions, resolve?: true): T;
-  public get<T = any>(
-    token: DIToken,
+  public get<T extends DIToken>(
+    token: T,
+    options: InjectionOptionalOptions,
+    resolve?: true,
+  ): T | null;
+  public get<T extends DIToken>(token: T, options?: InjectionOptions, resolve?: true): T;
+  public get<T extends DIToken>(
+    token: T,
     options?: InjectionOptions | InjectionOptionalOptions,
     resolve?: false,
   ): ProviderData | ProviderData[];
-  public get<T = any>(
-    token: DIToken,
+  public get<T extends DIToken>(
+    token: T,
+    options?: InjectionOptions | InjectionOptionalOptions,
+    resolve?: boolean,
+  ): ProviderData | ProviderData[];
+  public get<T extends DIToken>(
+    token: T,
     options: InjectionOptions | InjectionOptionalOptions = {},
-    resolve = true,
+    resolve: boolean = true,
   ): T | null | ProviderData | ProviderData[] {
     let provider;
 
@@ -80,10 +83,22 @@ export class Injector {
     }
 
     if (Array.isArray(provider)) {
-      return provider.map((p) => this.retreiveProviderValue(p, token)) as T;
+      return provider.map((p) =>
+        this.retreiveProviderValue({
+          data: p,
+          token,
+          options,
+          resolve,
+        }),
+      );
     }
 
-    return this.retreiveProviderValue(provider, token);
+    return this.retreiveProviderValue({
+      data: provider,
+      token,
+      options,
+      resolve,
+    });
   }
 
   public provide(...providers: Providers): void {
@@ -112,49 +127,66 @@ export class Injector {
     });
   }
 
-  private retreiveProviderValue(providerData: ProviderData, token: DIToken): any {
-    if (isProviderInitialized(providerData)) {
-      return providerData.value;
+  public export(...tokens: DIToken[]): Provider[] {
+    return tokens.map((token) => {
+      const data = this.get(token, {}, false);
+
+      
+
+      if (isProviderInitialized(data)) {
+
+      }
+    });
+  }
+
+  private retreiveProviderValue({
+    data,
+    token,
+    options,
+    resolve,
+  }: {
+    data: ProviderData;
+    token: DIToken;
+    options: InjectionOptions | InjectionOptionalOptions;
+    resolve: boolean;
+  }): any {
+    if (isProviderInitialized(data)) {
+      return data.value;
     }
 
-    const { provider } = providerData;
+    const { provider } = data;
 
     let value;
 
     if ('useValue' in provider) {
-      value = resolveValueProvider(provider);
+      value = provider.useValue;
     }
 
     if ('useClass' in provider) {
-      value = resolveClassProvider(provider);
+      value = new provider.useClass();
     }
 
     if ('useFactory' in provider) {
-      value = resolveFactoryProvider(provider);
+      const { useFactory } = provider;
+
+      if (getMetadata(useFactory).export) {
+        const getProviderValue: any = useFactory;
+        value = getProviderValue(token, options, resolve);
+      }
+
+      value = useFactory();
     }
 
     if ('useExisting' in provider) {
-      value = this.get(provider.useExisting);
+      value = this.get(provider.useExisting, options, resolve);
     }
 
-    this.providers.set(token.name, { value });
+    if (resolve) {
+      this.providers.set(token.name, { value });
+    }
 
     return value;
   }
-}
-
-function resolveValueProvider(provider: ValueProvider): any {
-  return provider.useValue;
-}
-
-function resolveClassProvider(provider: ClassProvider): any {
-  return new provider.useClass();
-}
-
-function resolveFactoryProvider(provider: FactoryProvider): any {
-  const { useFactory } = provider;
-
-  return useFactory();
 }
 
 function isProviderInitialized(provider: ProviderData): provider is InitializedProvider {

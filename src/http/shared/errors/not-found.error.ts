@@ -1,4 +1,4 @@
-import { RouteError } from './route.error';
+import { RouteError } from '../../shared/errors/route.error';
 
 export class NotFoundError extends RouteError {
   constructor(message: string) {

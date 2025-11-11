@@ -1,7 +1,6 @@
 import { validate, version } from 'uuid';
 
-import { NotFoundError } from '@http/router';
-import { BadRequestError } from '@http/shared';
+import { BadRequestError, NotFoundError } from '@http';
 
 import { UserModel, type UserModelProps } from '../models/user.model';
 

@@ -56,7 +56,7 @@ function importModules(injector: Injector, imports: Constructor[]): void {
       injector.provide({
         provide: token,
         useFactory() {
-          return moduleMetadata.injector.get(token);
+          return moduleMetadata.injector.get();
         },
       });
     });

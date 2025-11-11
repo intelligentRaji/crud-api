@@ -1,8 +1,8 @@
 import { IncomingMessage, ServerResponse, createServer } from 'node:http';
 
 import { Injector, inject, runInInjectionContext } from '@di';
+import { RouteError } from '@http';
 
-import { RouteError } from './errors';
 import { RouteRegestry } from './route-regestry.service';
 import { HOST, METADATA, MIDDLEWARE, PARAMS, PORT, REQUEST, RESPONSE } from './tokens';
 import type { Middleware } from './types/middleware';
@@ -16,6 +16,7 @@ export class Router {
   private readonly server = createServer();
 
   constructor() {
+    console.log('middlewares', this.responseMiddlewares);
     this.setupRequestHandler();
     this.startServer();
   }
