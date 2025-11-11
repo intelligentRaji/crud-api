@@ -1,5 +1,6 @@
-import { type Constructor, getMetadata } from 'libs/core';
+import { type Constructor } from '@repo/common';
 
+import { getMetadata } from '../metadata';
 import { DIError } from './errors';
 import { type ClassProvider, type Provider, type Providers } from './types';
 import type { DIToken } from './types/token';
@@ -39,24 +40,20 @@ export class Injector {
     this.provide(...providers, { provide: Injector, useValue: this });
   }
 
-  public get<T extends DIToken>(
-    token: T,
-    options: InjectionOptionalOptions,
-    resolve?: true,
-  ): T | null;
-  public get<T extends DIToken>(token: T, options?: InjectionOptions, resolve?: true): T;
-  public get<T extends DIToken>(
-    token: T,
+  public get<T>(token: DIToken<T>, options: InjectionOptionalOptions, resolve?: true): T | null;
+  public get<T>(token: DIToken<T>, options?: InjectionOptions, resolve?: true): T;
+  public get<T>(
+    token: DIToken<T>,
     options?: InjectionOptions | InjectionOptionalOptions,
     resolve?: false,
   ): ProviderData | ProviderData[];
-  public get<T extends DIToken>(
-    token: T,
+  public get<T>(
+    token: DIToken<T>,
     options?: InjectionOptions | InjectionOptionalOptions,
     resolve?: boolean,
-  ): ProviderData | ProviderData[];
-  public get<T extends DIToken>(
-    token: T,
+  ): T | null | ProviderData | ProviderData[];
+  public get<T>(
+    token: DIToken<T>,
     options: InjectionOptions | InjectionOptionalOptions = {},
     resolve: boolean = true,
   ): T | null | ProviderData | ProviderData[] {
@@ -124,15 +121,6 @@ export class Injector {
       }
 
       this.providers.set(provider.provide.name, { provider });
-    });
-  }
-
-  public export(...tokens: DIToken[]): Provider[] {
-    return tokens.map((token) => {
-      const data = this.get(token, {}, false);
-
-      if (isProviderInitialized(data)) {
-      }
     });
   }
 

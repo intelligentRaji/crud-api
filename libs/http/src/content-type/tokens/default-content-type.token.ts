@@ -1,4 +1,4 @@
-import { InjectionToken } from '@di';
+import { InjectionToken } from '@repo/core';
 
 import type { ContentTypeMap } from '../types';
 

@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.lib.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      "@router": ["./src/router/index.ts"],
+      "@common": ["./src/common/index.ts"],
+      "@content-type": ["./src/content-type/index.ts"]
+    }
+  },
+  "files": ["src/index.ts"]
+}

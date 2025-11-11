@@ -1,4 +1,4 @@
-import { inject } from '@di';
+import { inject } from '@repo/core';
 
 import { DEFAULT_CONTENT_TYPE } from './tokens';
 import type { ContentTypeMap } from './types';

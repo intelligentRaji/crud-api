@@ -1,7 +1,7 @@
 import { Module, extendModule } from '@di';
 
 import { RouterModule, type RouterModuleForRootOptions } from './router';
-import { SerializerModule } from './serializer';
+import { SerializerModule } from './content-type';
 
 export type HttpModuleForRootOptions = RouterModuleForRootOptions;
 

@@ -46,6 +46,19 @@ importers:
         specifier: ^1.8.16
         version: 1.8.16
 
+  libs/http:
+    dependencies:
+      '@repo/common':
+        specifier: workspace:*
+        version: link:../common
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+
 packages:
 
   '@babel/code-frame@7.27.1':

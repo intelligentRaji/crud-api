@@ -1,11 +1,13 @@
-import { InjectionToken } from '../di';
+import { InjectionToken, type ValueProvider } from '../di';
 
 export const APP_INITIALIZER = new InjectionToken('APP_INITIALIZER');
 
-export function provideAppInitializer(fn: () => void | Promise<void>) {
-  return {
+export function provideAppInitializers(
+  initializers: Array<() => void | Promise<void>>,
+): ValueProvider[] {
+  return initializers.map((initializer) => ({
     provide: APP_INITIALIZER,
-    useValue: fn,
+    useValue: initializer,
     multi: true,
-  };
+  }));
 }

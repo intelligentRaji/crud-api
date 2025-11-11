@@ -1,4 +1,4 @@
-import { type Constructor } from 'libs/core';
+import { type Constructor } from '@repo/common';
 
 import { getCurrentInjector } from './context';
 import { InjectionToken } from './injection-token';

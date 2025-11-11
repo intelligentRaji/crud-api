@@ -1,3 +1,5 @@
 import { libConfig } from '../vite.lib.config';
 
-export default libConfig('src/index.ts');
+const config = await libConfig('src/index.ts');
+
+export default config;

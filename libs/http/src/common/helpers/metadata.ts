@@ -1,6 +1,6 @@
-import { MetadataError, defineMetadata, getMetadata } from 'libs/core';
+import { MetadataError, defineMetadata, getMetadata } from '@repo/core';
 
-import type { ControllerMetadata } from '@http/router';
+import type { ControllerMetadata } from '@router';
 
 import { HandlerMeta } from '../classes';
 import type { HandlerMetadata } from '../types';

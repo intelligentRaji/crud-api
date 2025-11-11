@@ -5,7 +5,7 @@
   "printWidth": 100,
   "tabWidth": 2,
 
-  "importOrder": ["^@(.*)$", "^[./]"],
+  "importOrder": ["^@repo/(.*)$", "^@(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
 

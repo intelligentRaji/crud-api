@@ -1,11 +1,15 @@
 {
-  "name": "@repo/common",
-  "private": false,
+  "name": "@repo/http",
+  "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "build": "vite build && tsc -p tsconfig.json",
     "preview": "vite preview"
+  },
+  "dependencies": {
+    "@repo/core": "workspace:*",
+    "@repo/common": "workspace:*"
   },
   "devDependencies": {
     "tsc-alias": "^1.8.16"
@@ -16,8 +20,5 @@
       "default": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
-  },
-  "files": [
-    "./dist/**"
-  ]
+  }
 }
