@@ -1,22 +1,13 @@
 {
-  "name": "simple-crud-api",
+  "name": "@wakaria/rsschool-nodejs2025q4",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "tsx --watch ./src/main.ts",
-    "debug": "tsx --inspect ./src/main.ts",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
+  "packageManager": "pnpm@10.12.4",
   "pnpm": {
     "overrides": {
       "vite": "npm:rolldown-vite@7.1.14"
     }
-  },
-  "dependencies": {
-    "tsx": "^4.20.6",
-    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",

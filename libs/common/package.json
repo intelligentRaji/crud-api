@@ -1,0 +1,23 @@
+{
+  "name": "@repo/common",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.json",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "tsc-alias": "^1.8.16"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "./dist/**"
+  ]
+}
