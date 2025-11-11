@@ -1,7 +1,7 @@
 import { type Constructor } from '@repo/common';
 
-import { assertIsModule } from '.';
 import { Module, type ModuleDecoratorOptions } from '../decorators';
+import { assertIsModule } from './asserts/assert-is-module';
 import { getModuleMetadata } from './get-module-metadata';
 
 export function extendModule(module: Constructor, options: ModuleDecoratorOptions) {

@@ -1,4 +1,4 @@
-import { InjectionToken, type Provider } from '@di';
+import { InjectionToken, type Provider } from '@repo/core';
 
 import type { Middleware } from '../types';
 

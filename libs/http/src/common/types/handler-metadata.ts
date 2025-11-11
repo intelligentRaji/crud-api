@@ -1,5 +1,5 @@
-import type { Method } from '@http/router';
-import type { ContentTypeMap } from '@http/serializer';
+import type { ContentTypeMap } from '@content-type';
+import type { Method } from '@router';
 
 export interface HandlerMetadata {
   path: string;

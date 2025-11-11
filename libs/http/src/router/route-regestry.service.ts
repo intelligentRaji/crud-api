@@ -1,7 +1,6 @@
 import type { IncomingMessage } from 'node:http';
 
-import { NotFoundError } from '@http';
-import { type HandlerMeta, getHandlersMetadata } from '@http/shared';
+import { type HandlerMeta, NotFoundError, getHandlersMetadata } from '@common';
 
 import type { Method } from './types';
 

@@ -1,4 +1,4 @@
-import { updateHandlerMetadata } from '@http/shared';
+import { updateHandlerMetadata } from '@common';
 
 import type { Method } from '../../types';
 

@@ -1,4 +1,4 @@
-import { InjectionToken, inject } from '@di';
+import { InjectionToken, inject } from '@repo/core';
 
 export const PORT = new InjectionToken<number>('PORT');
 

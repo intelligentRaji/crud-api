@@ -1,4 +1,4 @@
-import { Module, extendModule } from '@di';
+import { Module, extendModule } from '@repo/core';
 
 import { RouterModule, type RouterModuleForRootOptions } from './router';
 import { SerializerModule } from './content-type';

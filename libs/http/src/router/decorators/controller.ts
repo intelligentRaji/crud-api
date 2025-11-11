@@ -1,6 +1,5 @@
-import { type Constructor, defineMetadata, getMetadata } from 'libs/core';
-
-import { inject } from '@di';
+import type { Constructor } from '@repo/common';
+import { defineMetadata, getMetadata, inject } from '@repo/core';
 
 import { RouteRegestry } from '../route-regestry.service';
 import type { ControllerMetadata } from '../types';

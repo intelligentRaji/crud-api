@@ -1,5 +1,6 @@
-import { Module } from "@di";
-import { MIDDLEWARE, provideMiddlewares } from "@http/router";
+import { Module } from "@repo/core";
+
+import { MIDDLEWARE, provideMiddlewares } from "@router";
 
 import { Serializer } from "./serializer.service";
 import { DEFAULT_CONTENT_TYPE } from "./tokens";

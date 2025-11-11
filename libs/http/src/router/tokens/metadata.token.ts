@@ -1,4 +1,5 @@
-import { InjectionToken } from '@di';
-import type { HandlerMetadata } from '@http/shared';
+import { InjectionToken } from '@repo/core';
+
+import type { HandlerMetadata } from '@common';
 
 export const METADATA = new InjectionToken<Readonly<HandlerMetadata>>('METADATA');

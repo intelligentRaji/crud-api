@@ -13,7 +13,10 @@ export class Serializer {
     'application/json': (data: unknown) => JSON.stringify(data),
   };
 
-  public serialize<K extends keyof ContentTypeMap>(data: any, contentType?: K): ContentTypeMap[K] {
+  public serialize<K extends keyof ContentTypeMap>(
+    data: unknown,
+    contentType?: K,
+  ): ContentTypeMap[K] {
     const serializer = this.serializers[contentType || this.defaultContentType];
     return serializer(data);
   }

@@ -1,7 +1,8 @@
 import { IncomingMessage, ServerResponse, createServer } from 'node:http';
 
-import { Injector, inject, runInInjectionContext } from '@di';
-import { RouteError } from '@http';
+import { Injector, inject, runInInjectionContext } from '@repo/core';
+
+import { RouteError } from '@common';
 
 import { RouteRegestry } from './route-regestry.service';
 import { HOST, METADATA, MIDDLEWARE, PARAMS, PORT, REQUEST, RESPONSE } from './tokens';

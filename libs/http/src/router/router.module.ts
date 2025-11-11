@@ -1,5 +1,4 @@
-import { APP_INITIALIZER, provideAppInitializer } from "libs/core";
-import { extendModule, inject, Module } from "@di";
+import { APP_INITIALIZER, extendModule, inject, Module, provideAppInitializers } from "@repo/core"; 
 
 import { Router } from "./router";
 import { RouteRegestry } from "./route-regestry.service";
@@ -22,10 +21,9 @@ export interface RouterModuleForRootOptions {
     provideMiddlewares([
       HttpCodeMiddleware,
     ]),
-    provideAppInitializer(() => {
-      // Instantiates router
-      inject(Router);
-    })
+    provideAppInitializers([
+      initializeRouter,
+    ])
   ],
   exports: [Router, RouteRegestry, APP_INITIALIZER, DEFAULT_HTTP_CODE, MIDDLEWARE],
 })
@@ -39,4 +37,8 @@ export class RouterModule {
       exports: [HOST, PORT],
     });
   }
+}
+
+function initializeRouter() {
+  inject(Router);
 }

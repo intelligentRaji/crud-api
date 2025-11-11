@@ -1,6 +1,6 @@
 import type { ServerResponse } from 'node:http';
 
-import { InjectionToken, inject } from '@di';
+import { InjectionToken, inject } from '@repo/core';
 
 export const RESPONSE = new InjectionToken<ServerResponse>('RESPONSE');
 

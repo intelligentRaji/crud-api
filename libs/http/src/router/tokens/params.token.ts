@@ -1,4 +1,4 @@
-import { DIError, InjectionToken, inject } from '@di';
+import { DIError, InjectionToken, inject } from '@repo/core';
 
 export const PARAMS = new InjectionToken<Record<string, string>>('PARAMS');
 

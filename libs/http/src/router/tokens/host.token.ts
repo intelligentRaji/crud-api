@@ -1,4 +1,4 @@
-import { InjectionToken, inject } from '@di';
+import { InjectionToken, inject } from '@repo/core';
 
 export const HOST = new InjectionToken<string>('HOST');
 

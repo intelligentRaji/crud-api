@@ -1,6 +1,6 @@
 import type { IncomingMessage } from 'node:http';
 
-import { InjectionToken, inject } from '@di';
+import { InjectionToken, inject } from '@repo/core';
 
 export const REQUEST = new InjectionToken<IncomingMessage>('REQUEST');
 

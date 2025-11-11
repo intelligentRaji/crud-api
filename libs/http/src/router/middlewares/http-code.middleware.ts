@@ -1,4 +1,4 @@
-import { inject } from '@di';
+import { inject } from '@repo/core';
 
 import { DEFAULT_HTTP_CODE, METADATA, response } from '../tokens';
 import type { Middleware } from '../types';

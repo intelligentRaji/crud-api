@@ -1,5 +1,6 @@
-import { inject } from '@di';
-import { METADATA, type Middleware, response } from '@http/router';
+import { inject } from '@repo/core';
+
+import { METADATA, type Middleware, response } from '@router';
 
 import { Serializer } from '../serializer.service';
 import { DEFAULT_CONTENT_TYPE } from '../tokens';
