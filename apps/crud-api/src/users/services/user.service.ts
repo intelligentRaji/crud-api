@@ -1,6 +1,6 @@
 import { validate, version } from 'uuid';
 
-import { BadRequestError, NotFoundError } from '@http';
+import { BadRequestError, NotFoundError } from '@repo/http';
 
 import { UserModel, type UserModelProps } from '../models/user.model';
 

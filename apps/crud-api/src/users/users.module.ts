@@ -1,4 +1,5 @@
-import { Module } from "@di";
+import { Module } from "@repo/core";
+
 import { UsersController } from "./controllers/users.controller";
 import { UserService } from "./services/user.service";
 

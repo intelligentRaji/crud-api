@@ -1,4 +1,4 @@
-import { libConfig } from '../vite.lib.config';
+import { libConfig } from '../../vite.base.config';
 
 const config = await libConfig('src/index.ts');
 

@@ -1,9 +1,10 @@
+import { builtinModules } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-export async function libConfig(entry: string) {
+export async function libConfig(entry: string, deps: string[] = []) {
   const libDirPath = process.cwd();
   const pkgPath = pathToFileURL(resolve(libDirPath, 'package.json')).href;
 
@@ -16,13 +17,17 @@ export async function libConfig(entry: string) {
         entry: resolve(libDirPath, entry),
         formats: ['cjs', 'es'],
         fileName(format, entryName) {
-          return `${entryName}.${format === 'cjs' ? 'cjs' : 'mjs'}`;
+          return `${entryName}.${format === 'cjs' ? 'cjs' : 'js'}`;
         },
       },
       sourcemap: true,
       target: 'es2022',
       rollupOptions: {
-        external: Object.keys(pkg.dependencies || {}),
+        external: [
+          ...builtinModules.map((m) => `node:${m}`),
+          ...Object.keys(pkg.dependencies || {}),
+          ...deps,
+        ],
       },
     },
     publicDir: false,

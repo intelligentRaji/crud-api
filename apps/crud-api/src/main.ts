@@ -1,5 +1,5 @@
-import { Application } from 'libs/core';
+import { Application } from '@repo/core';
 
-import { AppModule } from './apps/crud-api/src/app.module';
+import { AppModule } from './app.module';
 
 Application.init(AppModule);

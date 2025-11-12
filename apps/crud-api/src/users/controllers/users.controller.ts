@@ -1,5 +1,6 @@
-import { inject } from '@di';
-import { Controller, Delete, Get, params, Post, Put, request } from '@http/router';
+import { inject } from '@repo/core';
+import { Controller, Delete, Get, params, Post, Put } from '@repo/http';
+
 import { UserService } from '../services/user.service';
 
 @Controller('api/users')
@@ -18,18 +19,16 @@ export class UsersController {
 
   @Post()
   public create() {
-    const { body } = request();
-
-    return this.userService.create(body);
+    throw new Error('Not implemented');
   }
 
   @Put(':id')
   public update() {
-    return 'update';
+    throw new Error('Not implemented');
   }
 
   @Delete(':id')
   public delete() {
-    return 'delete';
+    return this.userService.delete(params('id'));
   }
 }

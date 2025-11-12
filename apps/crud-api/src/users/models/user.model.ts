@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-import { BadRequestError } from '@http/shared';
+import { BadRequestError } from '@repo/http';
 
 import type { User } from '../types/user';
 
