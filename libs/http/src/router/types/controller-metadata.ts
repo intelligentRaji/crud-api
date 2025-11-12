@@ -1,6 +1,6 @@
-import type { HandlerMeta } from '@common';
+import type { RouteMeta } from '../classes';
 
 export interface ControllerMetadata {
   controller: boolean;
-  handlers: Record<string, HandlerMeta>;
+  handlers: Record<string, RouteMeta>;
 }

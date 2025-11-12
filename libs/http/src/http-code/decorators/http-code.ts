@@ -1,8 +1,8 @@
-import { updateHandlerMetadata } from '@common';
+import { updateRouteMetadata } from '@router';
 
 export function HttpCode(code: number) {
   return (target: any, propertyKey: string) => {
-    updateHandlerMetadata(target, propertyKey, {
+    updateRouteMetadata(target, propertyKey, {
       httpCode: code,
     });
   };

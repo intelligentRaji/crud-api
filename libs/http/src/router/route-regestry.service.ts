@@ -1,28 +1,29 @@
 import type { IncomingMessage } from 'node:http';
 
-import { type HandlerMeta, NotFoundError, getHandlersMetadata } from '@common';
+import { type Method, NotFoundError } from '@shared';
 
-import type { Method } from './types';
+import { type RouteMeta } from './classes';
+import { getRoutesMetadata } from './helpers';
 
 export type RouteData = {
   handler: () => any;
-  metadata: HandlerMeta;
+  metadata: RouteMeta;
 };
 
-type HandlerRegestry = Partial<Record<Method, Record<string, RouteData>>>;
+type RouteMap = Partial<Record<Method, Record<string, RouteData>>>;
 
 export class RouteRegestry {
-  private readonly handlers: HandlerRegestry = {};
+  private readonly handlers: RouteMap = {};
 
   public registerRoutes(controller: any): void {
-    const handlers = getHandlersMetadata(controller);
+    const handlers = getRoutesMetadata(controller);
 
     for (const handler of Object.values(handlers)) {
       this.registerHandler(handler, controller);
     }
   }
 
-  private registerHandler(handler: HandlerMeta, controller: any): void {
+  private registerHandler(handler: RouteMeta, controller: any): void {
     const { path, method, propertyKey } = handler;
 
     const methodHandlers = this.handlers[method] ?? {};

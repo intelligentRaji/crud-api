@@ -1,7 +1,8 @@
 import { inject } from '@repo/core';
 
+import type { ContentTypeMap } from '@shared';
+
 import { DEFAULT_CONTENT_TYPE } from './tokens';
-import type { ContentTypeMap } from './types';
 
 export class Serializer {
   private readonly defaultContentType = inject(DEFAULT_CONTENT_TYPE);

@@ -1,6 +1,6 @@
-import { updateHandlerMetadata } from '@common';
+import type { Method } from '@shared';
 
-import type { Method } from '../../types';
+import { updateRouteMetadata } from '../../helpers';
 
 const METHOD_HTTP_CODE_MAP: Record<Method, number> = {
   GET: 200,
@@ -11,7 +11,7 @@ const METHOD_HTTP_CODE_MAP: Record<Method, number> = {
 
 export function Route(method: Method, path: string) {
   return function (target: any, propertyKey: string) {
-    updateHandlerMetadata(target, propertyKey, {
+    updateRouteMetadata(target, propertyKey, {
       path: path ? `/${path}` : '',
       propertyKey,
       method,

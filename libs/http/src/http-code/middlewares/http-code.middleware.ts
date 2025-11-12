@@ -1,7 +1,8 @@
 import { inject } from '@repo/core';
 
-import { DEFAULT_HTTP_CODE, METADATA, response } from '../tokens';
-import type { Middleware } from '../types';
+import { METADATA, type Middleware, response } from '@router';
+
+import { DEFAULT_HTTP_CODE } from '../tokens';
 
 export const HttpCodeMiddleware: Middleware = async (body, next) => {
   const res = response();

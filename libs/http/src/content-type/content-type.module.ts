@@ -19,4 +19,4 @@ import { contentTypeMiddleware } from "./middlewares";
 ],
 exports: [Serializer, DEFAULT_CONTENT_TYPE, MIDDLEWARE],
 })
-export class SerializerModule {}
+export class ContentTypeModule {}

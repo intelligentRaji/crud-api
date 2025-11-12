@@ -1,7 +1,7 @@
-import type { HandlerMetadata } from '../types';
+import type { RouteMetadata } from '../types';
 
-export class HandlerMeta implements HandlerMetadata {
-  private readonly _metadata: HandlerMetadata;
+export class RouteMeta implements RouteMetadata {
+  private readonly _metadata: RouteMetadata;
 
   public get path() {
     return this._metadata.path;
@@ -20,7 +20,7 @@ export class HandlerMeta implements HandlerMetadata {
   }
 
   constructor(
-    metadata: HandlerMetadata = {
+    metadata: RouteMetadata = {
       path: '',
       propertyKey: '',
       method: 'GET',
@@ -29,22 +29,22 @@ export class HandlerMeta implements HandlerMetadata {
     this._metadata = metadata;
   }
 
-  public get<K extends keyof HandlerMetadata>(key: K): HandlerMetadata[K] {
+  public get<K extends keyof RouteMetadata>(key: K): RouteMetadata[K] {
     return this._metadata[key];
   }
 
-  public set(updates: Partial<HandlerMetadata>): HandlerMeta {
-    return new HandlerMeta({
+  public set(updates: Partial<RouteMetadata>): RouteMeta {
+    return new RouteMeta({
       ...this._metadata,
       ...updates,
     });
   }
 
-  public has(key: keyof HandlerMetadata): boolean {
+  public has(key: keyof RouteMetadata): boolean {
     return key in this._metadata;
   }
 
-  public toObject(): HandlerMetadata {
+  public toObject(): RouteMetadata {
     return { ...this._metadata };
   }
 }

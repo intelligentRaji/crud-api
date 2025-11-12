@@ -1,9 +1,7 @@
 import { MetadataError, defineMetadata, getMetadata } from '@repo/core';
 
-import type { ControllerMetadata } from '@router';
-
-import { HandlerMeta } from '../classes';
-import type { HandlerMetadata } from '../types';
+import { RouteMeta } from '../classes';
+import type { ControllerMetadata, RouteMetadata } from '../types';
 
 export function getControllerMetadata(target: any): ControllerMetadata {
   const metadata = getMetadata(target);
@@ -15,7 +13,7 @@ export function getControllerMetadata(target: any): ControllerMetadata {
   return metadata;
 }
 
-export function getHandlersMetadata(target: any): ControllerMetadata['handlers'] {
+export function getRoutesMetadata(target: any): ControllerMetadata['handlers'] {
   const metadata = getMetadata(target);
 
   const handlers = metadata.handlers;
@@ -29,15 +27,15 @@ export function getHandlersMetadata(target: any): ControllerMetadata['handlers']
   return handlers;
 }
 
-export function updateHandlerMetadata(
+export function updateRouteMetadata(
   target: any,
   propertyKey: string,
-  metadata: Partial<HandlerMetadata>,
+  metadata: Partial<RouteMetadata>,
 ): void {
   const controller = getMetadata(target);
   const handlers = controller.handlers ?? {};
 
-  const meta = handlers[propertyKey] ?? new HandlerMeta();
+  const meta = handlers[propertyKey] ?? new RouteMeta();
 
   const updated = meta.set(metadata);
 

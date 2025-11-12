@@ -5,8 +5,9 @@
     "outDir": "./dist",
     "paths": {
       "@router": ["./src/router/index.ts"],
-      "@common": ["./src/common/index.ts"],
-      "@content-type": ["./src/content-type/index.ts"]
+      "@shared": ["./src/shared/index.ts"],
+      "@content-type": ["./src/content-type/index.ts"],
+      "@http-code": ["./src/http-code/index.ts"]
     }
   },
   "files": ["src/index.ts"]

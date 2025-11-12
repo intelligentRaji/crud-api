@@ -1,9 +1,8 @@
-import { updateHandlerMetadata } from '@common';
-
-import type { ContentTypeMap } from '../types';
+import { updateRouteMetadata } from '@router';
+import type { ContentTypeMap } from '@shared';
 
 export function ContentType(contentType: keyof ContentTypeMap) {
   return function (target: any, propertyKey: string) {
-    updateHandlerMetadata(target, propertyKey, { serializeTo: contentType });
+    updateRouteMetadata(target, propertyKey, { serializeTo: contentType });
   };
 }
